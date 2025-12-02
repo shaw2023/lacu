@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>性能带宽计算器 (移动端优化版)</title>
+    <title>性能带宽计算器</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -22,7 +22,7 @@
             flex-direction: column;
             align-items: center;
         }
-        
+        /* 核心调整：确保容器内两列等高 */
         .container {
             max-width: 1200px;
             width: 100%;
@@ -30,9 +30,9 @@
             grid-template-columns: 1fr 1fr;
             gap: 25px;
             margin-top: 15px;
+            align-items: stretch; /* 关键：让子项拉伸到相同高度 */
         }
         
-        /* 移动端优化：小屏幕时单列布局 */
         @media (max-width: 900px) {
             .container {
                 grid-template-columns: 1fr;
@@ -56,7 +56,6 @@
             font-size: 2.2rem;
         }
         
-        /* 移动端优化：标题字体调整 */
         @media (max-width: 600px) {
             h1 {
                 font-size: 1.8rem;
@@ -71,13 +70,12 @@
             line-height: 1.5;
         }
         
-        /* 移动端优化：副标题字体调整 */
         @media (max-width: 600px) {
             .subtitle {
                 font-size: 1rem;
             }
         }
-        
+        /* 关键调整：让两个卡片区域自身也支持内容拉伸 */
         .card {
             background: rgba(255, 255, 255, 0.07);
             border-radius: 15px;
@@ -85,9 +83,11 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            height: 100%; /* 关键：填充容器高度 */
+            display: flex;
+            flex-direction: column;
         }
         
-        /* 移动端优化：卡片内边距调整 */
         @media (max-width: 600px) {
             .card {
                 padding: 20px 15px;
@@ -105,7 +105,6 @@
             font-size: 1.5rem;
         }
         
-        /* 移动端优化：卡片标题字体调整 */
         @media (max-width: 600px) {
             .card h2 {
                 font-size: 1.3rem;
@@ -128,7 +127,6 @@
             flex-wrap: wrap;
         }
         
-        /* 移动端优化：按钮区域调整 */
         @media (max-width: 600px) {
             .input-controls {
                 gap: 10px;
@@ -153,7 +151,6 @@
             font-size: 0.95rem;
         }
         
-        /* 移动端优化：按钮大小调整 */
         @media (max-width: 600px) {
             .btn {
                 min-width: calc(50% - 5px);
@@ -188,7 +185,6 @@
             margin-bottom: 25px;
         }
         
-        /* 移动端优化：输入框在小屏幕上单列显示 */
         @media (max-width: 600px) {
             .input-container {
                 grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
@@ -215,7 +211,6 @@
             appearance: none;
         }
         
-        /* 移动端优化：输入框字体和大小调整 */
         @media (max-width: 600px) {
             .number-input {
                 font-size: 1rem;
@@ -248,7 +243,6 @@
             margin-bottom: 25px;
         }
         
-        /* 移动端优化：统计网格间隙调整 */
         @media (max-width: 600px) {
             .stats-grid {
                 gap: 15px;
@@ -270,7 +264,6 @@
             word-break: break-all;
         }
         
-        /* 移动端优化：统计值字体调整 */
         @media (max-width: 600px) {
             .stat-value {
                 font-size: 1.8rem;
@@ -282,7 +275,6 @@
             font-size: 0.95rem;
         }
         
-        /* 移动端优化：统计标签字体调整 */
         @media (max-width: 600px) {
             .stat-label {
                 font-size: 0.9rem;
@@ -307,7 +299,6 @@
             margin-bottom: 25px;
         }
         
-        /* 移动端优化：规则区域内边距调整 */
         @media (max-width: 600px) {
             .rules {
                 padding: 15px;
@@ -330,7 +321,6 @@
             line-height: 1.4;
         }
         
-        /* 移动端优化：规则项字体调整 */
         @media (max-width: 600px) {
             .rule-item {
                 font-size: 0.9rem;
@@ -344,7 +334,6 @@
             justify-content: space-between;
         }
         
-        /* 移动端优化：分类区域垂直排列 */
         @media (max-width: 900px) {
             .classification-container {
                 flex-direction: column;
@@ -361,7 +350,6 @@
             text-align: center;
         }
         
-        /* 移动端优化：分类盒子内边距调整 */
         @media (max-width: 600px) {
             .class-box {
                 padding: 18px 15px;
@@ -374,7 +362,6 @@
             margin-bottom: 10px;
         }
         
-        /* 移动端优化：分类标题字体调整 */
         @media (max-width: 600px) {
             .class-box h3 {
                 font-size: 1.4rem;
@@ -426,21 +413,11 @@
             text-align: center;
         }
         
-        .calculation-details {
-            margin-top: 25px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
+        /* --- 核心优化：区间范围风格与“统计结果”完全一致 --- */
+        .range-section {
+            margin-top: 20px;
         }
-        
-        /* 移动端优化：计算详情内边距调整 */
-        @media (max-width: 600px) {
-            .calculation-details {
-                padding: 15px;
-            }
-        }
-        
-        .details-title {
+        .range-title {
             color: #72efdd;
             margin-bottom: 15px;
             display: flex;
@@ -448,17 +425,60 @@
             gap: 10px;
             font-size: 1.2rem;
         }
-        
-        .details-grid {
+        .range-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-top: 10px;
         }
         
-        .detail-item {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 15px;
-            border-radius: 8px;
+        @media (max-width: 600px) {
+            .range-container {
+                gap: 15px;
+            }
+        }
+        
+        /* 区间方块样式与.stat-box保持一致 */
+        .range-box {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 18px 12px;
+            text-align: center;
+            border-top: 4px solid; /* 仅用顶部边框颜色区分等级 */
+        }
+        
+        .range-box.l { border-top-color: #f72585; }
+        .range-box.a { border-top-color: #f8961e; }
+        .range-box.c { border-top-color: #4cc9f0; }
+        .range-box.u { border-top-color: #72efdd; }
+        
+        .range-level {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .range-level.l { color: #f72585; }
+        .range-level.a { color: #f8961e; }
+        .range-level.c { color: #4cc9f0; }
+        .range-level.u { color: #72efdd; }
+        
+        .range-expression {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #b8b8d1;
+            margin-bottom: 12px;
+            line-height: 1.3;
+            min-height: 2.2em; /* 保持表达式行数一致 */
+        }
+        
+        /* 区间数值样式与.stat-value保持一致 */
+        .range-values {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: white;
+            word-break: break-all;
+            line-height: 1.3;
+            min-height: 2.2em; /* 保持数值显示区域高度 */
         }
         
         .footer {
@@ -471,7 +491,6 @@
             line-height: 1.5;
         }
         
-        /* 移动端优化：页脚字体调整 */
         @media (max-width: 600px) {
             .footer {
                 font-size: 0.8rem;
@@ -510,11 +529,10 @@
             background: rgba(255, 255, 255, 0.2);
         }
         
-        /* 移动端优化：示例按钮调整 */
         @media (max-width: 600px) {
             .example-btn {
                 min-width: 100%;
-                order: -1; /* 在移动端将示例按钮放到最前面 */
+                order: -1;
             }
         }
         
@@ -527,11 +545,6 @@
             font-size: 0.9rem;
             line-height: 1.5;
         }
-        
-        /* 技术说明：移动端适配优化已整合 */
-        /* 1. 使用响应式媒体查询针对不同屏幕尺寸调整布局 */
-        /* 2. 优化触摸目标大小，确保按钮和输入框在手机上容易操作 */
-        /* 3. 调整字体大小和间距，提升小屏幕可读性 */
     </style>
 </head>
 <body>
@@ -563,7 +576,6 @@
             </div>
             
             <div class="input-container" id="inputContainer">
-                <!-- 动态添加的输入框会放在这里 -->
                 <input type="number" class="number-input" placeholder="数值">
                 <input type="number" class="number-input" placeholder="数值">
                 <input type="number" class="number-input" placeholder="数值">
@@ -606,23 +618,32 @@
                 </div>
             </div>
             
-            <div class="calculation-details">
-                <h3 class="details-title"><i class="fas fa-cogs"></i> 分类边界值计算</h3>
-                <div class="details-grid">
-                    <div class="detail-item">
-                        <div>均值 - 1.25 × 样本标准差</div>
-                        <div class="stat-value" id="paramL">0.00</div>
-                        <small style="color:#b8b8d1;">(L级上限)</small>
+            <!-- 风格统一的LACU区间范围 -->
+            <div class="range-section">
+                <h2 class="range-title"><i class="fas fa-ruler-combined"></i> LACU 区间范围</h2>
+                <div class="range-container" id="rangeContainer">
+                    <div class="range-box l">
+                        <div class="range-level l">L 等级</div>
+                        <div class="range-expression">数值 ≤ 边界L</div>
+                        <div class="range-values" id="rangeL">(-∞, 0.00]</div>
                     </div>
-                    <div class="detail-item">
-                        <div>均值 - 0.5 × 样本标准差</div>
-                        <div class="stat-value" id="paramA">0.00</div>
-                        <small style="color:#b8b8d1;">(A/C级边界)</small>
+                    
+                    <div class="range-box a">
+                        <div class="range-level a">A 等级</div>
+                        <div class="range-expression">边界L < 数值 ≤ 边界A</div>
+                        <div class="range-values" id="rangeA">(0.00, 0.00]</div>
                     </div>
-                    <div class="detail-item">
-                        <div>均值 + 0.5 × 样本标准差</div>
-                        <div class="stat-value" id="paramU">0.00</div>
-                        <small style="color:#b8b8d1;">(C/U级边界)</small>
+                    
+                    <div class="range-box c">
+                        <div class="range-level c">C 等级</div>
+                        <div class="range-expression">边界A < 数值 ≤ 边界U</div>
+                        <div class="range-values" id="rangeC">(0.00, 0.00]</div>
+                    </div>
+                    
+                    <div class="range-box u">
+                        <div class="range-level u">U 等级</div>
+                        <div class="range-expression">数值 > 边界U</div>
+                        <div class="range-values" id="rangeU">(0.00, +∞)</div>
                     </div>
                 </div>
             </div>
@@ -664,7 +685,7 @@
     </div>
     
     <div class="footer">
-        <p>性能带宽计算器 (移动端优化版) &copy; 2023 | 使用样本标准差计算，已优化移动端显示</p>
+        <p>性能带宽计算器 &copy; 2023 | 使用样本标准差计算，直观显示LACU区间范围</p>
         <p style="margin-top: 5px; font-size: 0.8rem;">提示：在手机上使用时，建议横向旋转屏幕以获得更佳显示效果</p>
     </div>
 
@@ -683,10 +704,11 @@
         const varianceValue = document.getElementById('varianceValue');
         const stdValue = document.getElementById('stdValue');
         
-        // 边界值元素
-        const paramL = document.getElementById('paramL');
-        const paramA = document.getElementById('paramA');
-        const paramU = document.getElementById('paramU');
+        // 区间范围元素
+        const rangeL = document.getElementById('rangeL');
+        const rangeA = document.getElementById('rangeA');
+        const rangeC = document.getElementById('rangeC');
+        const rangeU = document.getElementById('rangeU');
         
         // 分类元素
         const classL = document.getElementById('classL');
@@ -701,8 +723,6 @@
             input.className = 'number-input';
             input.placeholder = '数值';
             inputContainer.appendChild(input);
-            
-            // 添加后自动聚焦
             setTimeout(() => input.focus(), 10);
         });
         
@@ -724,15 +744,14 @@
                 errorMsg.style.display = 'block';
                 return;
             }
-            
             errorMsg.style.display = 'none';
             
             // 计算统计值
             const mean = calculateMean(values);
-            const variance = calculateVariance(values, mean); // 样本方差
-            const std = Math.sqrt(variance); // 样本标准差
+            const variance = calculateVariance(values, mean);
+            const std = Math.sqrt(variance);
             
-            // 计算分类边界值（关键修改：使用样本标准差std，而非方差variance）
+            // 计算分类边界值（使用样本标准差std）
             const boundaryL = mean - 1.25 * std;
             const boundaryA = mean - 0.5 * std;
             const boundaryU = mean + 0.5 * std;
@@ -743,10 +762,8 @@
             varianceValue.textContent = variance.toFixed(2);
             stdValue.textContent = std.toFixed(2);
             
-            // 更新边界值显示
-            paramL.textContent = boundaryL.toFixed(2);
-            paramA.textContent = boundaryA.toFixed(2);
-            paramU.textContent = boundaryU.toFixed(2);
+            // 更新区间范围显示
+            updateRangeDisplay(boundaryL, boundaryA, boundaryU);
             
             // 分类数值
             const classLValues = [];
@@ -779,23 +796,17 @@
             inputs.forEach(input => {
                 input.value = '';
             });
-            
             // 重置显示
             resetDisplay();
         });
         
         // 加载示例数据
         exampleBtn.addEventListener('click', function() {
-            // 示例数据
             const exampleData = [12.5, 15.2, 14.8, 16.3, 13.7, 17.5, 12.9, 15.8, 14.2, 18.1];
-            
-            // 清空现有输入
             const inputs = document.querySelectorAll('.number-input');
             inputs.forEach(input => {
                 inputContainer.removeChild(input);
             });
-            
-            // 添加示例数据输入框
             exampleData.forEach(value => {
                 const input = document.createElement('input');
                 input.type = 'number';
@@ -803,8 +814,6 @@
                 input.value = value;
                 inputContainer.appendChild(input);
             });
-            
-            // 自动计算
             setTimeout(() => {
                 calcBtn.click();
             }, 100);
@@ -818,29 +827,38 @@
         
         // 计算方差（样本方差，与Excel STDEV函数一致）
         function calculateVariance(values, mean) {
-            // 样本方差公式：分母为 n-1
             if (values.length <= 1) {
-                return 0; // 样本数量不足，无法计算样本方差
+                return 0;
             }
             const squaredDifferences = values.map(value => Math.pow(value - mean, 2));
             const sumSquaredDiff = squaredDifferences.reduce((acc, val) => acc + val, 0);
             return sumSquaredDiff / (values.length - 1);
         }
         
+        // 更新区间范围显示的函数
+        function updateRangeDisplay(boundaryL, boundaryA, boundaryU) {
+            // 更新L等级区间：(-∞, boundaryL]
+            rangeL.textContent = `(-∞, ${boundaryL.toFixed(2)}]`;
+            // 更新A等级区间：(boundaryL, boundaryA]
+            rangeA.textContent = `(${boundaryL.toFixed(2)}, ${boundaryA.toFixed(2)}]`;
+            // 更新C等级区间：(boundaryA, boundaryU]
+            rangeC.textContent = `(${boundaryA.toFixed(2)}, ${boundaryU.toFixed(2)}]`;
+            // 更新U等级区间：(boundaryU, +∞)
+            rangeU.textContent = `(${boundaryU.toFixed(2)}, +∞)`;
+        }
+        
         // 更新分类显示
         function updateClassDisplay(element, values, color) {
             element.innerHTML = '';
-            
             if (values.length === 0) {
                 element.innerHTML = '<span class="no-data">暂无数据</span>';
                 return;
             }
-            
             values.forEach(value => {
                 const valueElement = document.createElement('span');
                 valueElement.className = 'value-item';
                 valueElement.textContent = value.toFixed(2);
-                valueElement.style.backgroundColor = color + '40'; // 添加透明度
+                valueElement.style.backgroundColor = color + '40';
                 valueElement.style.border = `1px solid ${color}`;
                 element.appendChild(valueElement);
             });
@@ -853,21 +871,21 @@
             varianceValue.textContent = '0.00';
             stdValue.textContent = '0.00';
             
-            paramL.textContent = '0.00';
-            paramA.textContent = '0.00';
-            paramU.textContent = '0.00';
+            // 重置区间范围显示
+            rangeL.textContent = '(-∞, 0.00]';
+            rangeA.textContent = '(0.00, 0.00]';
+            rangeC.textContent = '(0.00, 0.00]';
+            rangeU.textContent = '(0.00, +∞)';
             
             classL.innerHTML = '<span class="no-data">暂无数据</span>';
             classA.innerHTML = '<span class="no-data">暂无数据</span>';
             classC.innerHTML = '<span class="no-data">暂无数据</span>';
             classU.innerHTML = '<span class="no-data">暂无数据</span>';
-            
             errorMsg.style.display = 'none';
         }
         
         // 初始化：添加几个输入框
         window.addEventListener('DOMContentLoaded', function() {
-            // 添加初始输入框
             for (let i = 0; i < 4; i++) {
                 const input = document.createElement('input');
                 input.type = 'number';
