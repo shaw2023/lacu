@@ -24,7 +24,7 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             width: 100%;
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -33,7 +33,7 @@
             align-items: stretch;
         }
         
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .container {
                 grid-template-columns: 1fr;
                 gap: 20px;
@@ -138,6 +138,11 @@
             color: #4cc9f0;
             margin-bottom: 8px;
             font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
         
         @media (max-width: 600px) {
@@ -204,6 +209,12 @@
             grid-column: 1;
         }
         
+        @media (max-width: 1100px) {
+            .input-section {
+                grid-column: 1;
+            }
+        }
+        
         .input-controls {
             display: flex;
             gap: 12px;
@@ -262,6 +273,11 @@
             box-shadow: 0 5px 15px rgba(247, 37, 133, 0.4);
         }
         
+        /* 优化计算性能带宽按钮，避免换行 */
+        .calc-btn-text {
+            white-space: nowrap;
+        }
+        
         .input-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -314,7 +330,7 @@
             flex-direction: column;
         }
         
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .stats-section {
                 grid-column: 1;
             }
@@ -370,7 +386,7 @@
             margin-top: 10px;
         }
         
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .classification-section {
                 grid-column: 1;
             }
@@ -396,7 +412,12 @@
             font-size: 1.2rem;
             display: flex;
             align-items: center;
+            padding-left: 0;
             justify-content: space-between;
+        }
+        
+        .rules h3 i {
+            margin-right: 10px;
         }
         
         .algorithm-indicator {
@@ -520,12 +541,15 @@
         }
         
         .range-section {
-            margin-top: 20px;
+            margin-top: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
         
         .range-title {
             color: #72efdd;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -535,22 +559,28 @@
         .range-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 18px;
-            margin-top: 10px;
+            gap: 15px;
+            margin-top: 8px;
+            flex-grow: 1;
         }
         
         @media (max-width: 600px) {
             .range-container {
-                gap: 15px;
+                gap: 12px;
             }
         }
         
         .range-box {
             background: rgba(0, 0, 0, 0.2);
             border-radius: 10px;
-            padding: 18px 12px;
+            padding: 14px 10px;
             text-align: center;
             border-top: 4px solid;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: auto;
+            min-height: 0;
         }
         
         .range-box.l { border-top-color: #f72585; }
@@ -559,9 +589,9 @@
         .range-box.u { border-top-color: #72efdd; }
         
         .range-level {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         
         .range-level.l { color: #f72585; }
@@ -571,20 +601,133 @@
         
         .range-expression {
             font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #b8b8d1;
-            margin-bottom: 12px;
-            line-height: 1.3;
-            min-height: 2.2em;
+            margin-bottom: 8px;
+            line-height: 1.2;
+            min-height: 1.8em;
         }
         
         .range-values {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: white;
             word-break: break-all;
-            line-height: 1.3;
-            min-height: 2.2em;
+            line-height: 1.2;
+            min-height: 1.8em;
+            padding: 8px 6px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 6px;
+            border-left: 3px solid;
+        }
+        
+        .range-values.l { border-left-color: #f72585; }
+        .range-values.a { border-left-color: #f8961e; }
+        .range-values.c { border-left-color: #4cc9f0; }
+        .range-values.u { border-left-color: #72efdd; }
+        
+        /* 数据分布柱状图样式 */
+        .chart-section {
+            grid-column: 1 / span 2;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 1100px) {
+            .chart-section {
+                grid-column: 1;
+            }
+        }
+        
+        .chart-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 10px;
+            position: relative;
+            height: 400px;
+        }
+        
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 350px;
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .chart-container {
+                height: 300px;
+                padding: 12px;
+            }
+        }
+        
+        #dataChart {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .y-axis-label {
+            position: absolute;
+            font-size: 0.9rem;
+            color: #b8b8d1;
+        }
+        
+        .y-axis-label.right {
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%) rotate(90deg);
+            transform-origin: right center;
+        }
+        
+        .boundary-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            width: 100%;
+            z-index: 5;
+        }
+        
+        .boundary-line.l {
+            border-top: 2px dashed #f72585;
+            background: rgba(247, 37, 133, 0.1);
+        }
+        
+        .boundary-line.a {
+            border-top: 2px dashed #f8961e;
+            background: rgba(248, 150, 30, 0.1);
+        }
+        
+        .boundary-line.c {
+            border-top: 2px dashed #4cc9f0;
+            background: rgba(76, 201, 240, 0.1);
+        }
+        
+        .boundary-label {
+            position: absolute;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            z-index: 10;
+        }
+        
+        .boundary-label.l {
+            background: rgba(247, 37, 133, 0.2);
+            color: #f72585;
+            border: 1px solid rgba(247, 37, 133, 0.5);
+        }
+        
+        .boundary-label.a {
+            background: rgba(248, 150, 30, 0.2);
+            color: #f8961e;
+            border: 1px solid rgba(248, 150, 30, 0.5);
+        }
+        
+        .boundary-label.c {
+            background: rgba(76, 201, 240, 0.2);
+            color: #4cc9f0;
+            border: 1px solid rgba(76, 201, 240, 0.5);
         }
         
         .footer {
@@ -676,7 +819,7 @@
                     <i class="fas fa-plus"></i> 添加输入框
                 </button>
                 <button class="btn" id="calcBtn">
-                    <i class="fas fa-calculator"></i> 计算性能带宽
+                    <i class="fas fa-calculator"></i> <span class="calc-btn-text">计算性能带宽</span>
                 </button>
                 <button class="btn btn-clear" id="clearBtn">
                     <i class="fas fa-trash-alt"></i> 清除所有
@@ -797,6 +940,13 @@
                 </div>
             </div>
         </div>
+        
+        <div class="card chart-section">
+            <h2><i class="fas fa-chart-bar"></i> 数据分布柱状图</h2>
+            <div class="chart-container" id="chartContainer">
+                <canvas id="dataChart"></canvas>
+            </div>
+        </div>
     </div>
     
     <div class="footer">
@@ -816,6 +966,7 @@
         const algorithmIndicator = document.getElementById('algorithmIndicator');
         const currentAlgorithmText = document.getElementById('currentAlgorithmText');
         const rulesContainer = document.getElementById('rulesContainer');
+        const chartContainer = document.getElementById('chartContainer');
         
         // 统计结果元素
         const countValue = document.getElementById('countValue');
@@ -1047,6 +1198,9 @@
             updateClassDisplay(classA, classAValues, '#f8961e');
             updateClassDisplay(classC, classCValues, '#4cc9f0');
             updateClassDisplay(classU, classUValues, '#72efdd');
+            
+            // 绘制数据分布柱状图
+            drawDataChart(values, boundaryL, boundaryA, boundaryU);
         });
         
         // 清除所有输入
@@ -1059,9 +1213,10 @@
             resetDisplay();
         });
         
-        // 加载示例数据
+        // 加载示例数据（修改为8个数据）
         exampleBtn.addEventListener('click', function() {
-            const exampleData = [12.5, 15.2, 14.8, 16.3, 13.7, 17.5, 12.9, 15.8, 14.2, 18.1];
+            // 示例数据：8个数据点
+            const exampleData = [12.5, 15.2, 14.8, 16.3, 13.7, 17.5, 12.9, 15.8];
             const inputs = document.querySelectorAll('.number-input');
             inputs.forEach(input => {
                 inputContainer.removeChild(input);
@@ -1128,6 +1283,231 @@
             });
         }
         
+        // 绘制数据分布柱状图
+        function drawDataChart(values, boundaryL, boundaryA, boundaryU) {
+            // 获取canvas元素
+            const canvas = document.getElementById('dataChart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const container = canvas.parentElement;
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
+            
+            // 设置canvas尺寸
+            canvas.width = containerWidth;
+            canvas.height = containerHeight;
+            
+            // 清除之前的边界线
+            const existingLines = chartContainer.querySelectorAll('.boundary-line, .boundary-label');
+            existingLines.forEach(el => el.remove());
+            
+            // 清除画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 如果没有数据，返回
+            if (values.length === 0) return;
+            
+            // 对数据进行排序（从高到低）
+            const sortedValues = [...values].sort((a, b) => b - a);
+            
+            // 计算图表区域边距
+            const margin = { top: 30, right: 60, bottom: 40, left: 60 };
+            const chartWidth = canvas.width - margin.left - margin.right;
+            const chartHeight = canvas.height - margin.top - margin.bottom;
+            
+            // 计算Y轴范围
+            const minValue = Math.min(...sortedValues, boundaryL, boundaryA, boundaryU);
+            const maxValue = Math.max(...sortedValues, boundaryL, boundaryA, boundaryU);
+            const valueRange = maxValue - minValue;
+            
+            // 为Y轴添加一些余量
+            const yPadding = valueRange * 0.1;
+            const yMin = minValue - yPadding;
+            const yMax = maxValue + yPadding;
+            
+            // 比例尺函数：将数值转换为Y坐标
+            const yScale = (value) => {
+                return margin.top + chartHeight - ((value - yMin) / (yMax - yMin)) * chartHeight;
+            };
+            
+            // 计算柱状图参数
+            const barCount = sortedValues.length;
+            const barWidth = Math.min(40, chartWidth / barCount - 5);
+            const barSpacing = (chartWidth - barWidth * barCount) / (barCount + 1);
+            
+            // 绘制Y轴网格和刻度
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+            ctx.font = '12px Arial';
+            ctx.fillStyle = '#b8b8d1';
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            
+            // 绘制5条水平网格线
+            for (let i = 0; i <= 5; i++) {
+                const value = yMin + (yMax - yMin) * (i / 5);
+                const y = yScale(value);
+                
+                // 网格线
+                ctx.beginPath();
+                ctx.moveTo(margin.left, y);
+                ctx.lineTo(margin.left + chartWidth, y);
+                ctx.stroke();
+                
+                // 刻度标签（只显示数值，不显示"输入数据值"标题）
+                ctx.fillText(value.toFixed(2), margin.left - 10, y);
+            }
+            
+            // 移除左侧标题显示
+            
+            // 绘制X轴
+            ctx.beginPath();
+            ctx.moveTo(margin.left, margin.top + chartHeight);
+            ctx.lineTo(margin.left + chartWidth, margin.top + chartHeight);
+            ctx.stroke();
+            
+            // 绘制柱状图
+            for (let i = 0; i < barCount; i++) {
+                const value = sortedValues[i];
+                const x = margin.left + barSpacing + i * (barWidth + barSpacing);
+                const y = yScale(value);
+                const barHeight = margin.top + chartHeight - y;
+                
+                // 确定柱子的颜色（根据当前算法和数值所处的区间）
+                let barColor;
+                if (currentAlgorithm === 1) {
+                    // 算法1：LOWER IS BETTER
+                    if (value <= boundaryL) {
+                        barColor = '#f72585'; // L级 - 红色
+                    } else if (value <= boundaryA) {
+                        barColor = '#f8961e'; // A级 - 橙色
+                    } else if (value <= boundaryU) {
+                        barColor = '#4cc9f0'; // C级 - 蓝色
+                    } else {
+                        barColor = '#72efdd'; // U级 - 青色
+                    }
+                } else {
+                    // 算法2：HIGHER IS BETTER
+                    if (value >= boundaryL) {
+                        barColor = '#f72585'; // L级 - 红色
+                    } else if (value >= boundaryA) {
+                        barColor = '#f8961e'; // A级 - 橙色
+                    } else if (value >= boundaryU) {
+                        barColor = '#4cc9f0'; // C级 - 蓝色
+                    } else {
+                        barColor = '#72efdd'; // U级 - 青色
+                    }
+                }
+                
+                // 绘制柱子
+                ctx.fillStyle = barColor;
+                ctx.fillRect(x, y, barWidth, barHeight);
+                
+                // 绘制柱子边框
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(x, y, barWidth, barHeight);
+                
+                // 在柱子顶部显示数值
+                ctx.fillStyle = 'white';
+                ctx.font = '10px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(value.toFixed(1), x + barWidth / 2, y - 5);
+                
+                // 在柱子底部显示序号
+                ctx.fillStyle = '#b8b8d1';
+                ctx.textBaseline = 'top';
+                ctx.fillText(i + 1, x + barWidth / 2, margin.top + chartHeight + 5);
+            }
+            
+            // 绘制边界线（修改：只显示L、A、C三条线，不显示U）
+            // L边界线
+            drawBoundaryLine(ctx, boundaryL, '#f72585', 'L', yScale, margin, chartWidth);
+            // A边界线
+            drawBoundaryLine(ctx, boundaryA, '#f8961e', 'A', yScale, margin, chartWidth);
+            // C边界线（实际上是U边界，但标签显示为C）
+            drawBoundaryLine(ctx, boundaryU, '#4cc9f0', 'C', yScale, margin, chartWidth);
+            
+            // 绘制右侧性能带宽等级标记（只显示L、A、C，不显示U）
+            drawRightAxisLabels(ctx, yScale, margin, chartHeight, yMin, yMax);
+        }
+        
+        // 绘制边界线函数
+        function drawBoundaryLine(ctx, value, color, label, yScale, margin, chartWidth) {
+            const y = yScale(value);
+            
+            // 只在canvas上绘制虚线，不创建DOM元素
+            ctx.beginPath();
+            ctx.setLineDash([5, 5]);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.moveTo(margin.left, y);
+            ctx.lineTo(margin.left + chartWidth, y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // 创建DOM元素显示边界线标签（显示L、A、C三个标签）
+            const labelEl = document.createElement('div');
+            labelEl.className = `boundary-label ${label.toLowerCase()}`;
+            labelEl.textContent = `${label}: ${value.toFixed(2)}`;
+            labelEl.style.top = `${y - 15}px`;
+            labelEl.style.right = '10px';
+            
+            chartContainer.appendChild(labelEl);
+        }
+        
+        // 绘制右侧Y轴标签（性能带宽等级）- 只显示L、A、C三个等级
+        function drawRightAxisLabels(ctx, yScale, margin, chartHeight, yMin, yMax) {
+            // 只显示L、A、C三个等级，不显示U
+            const levelLabels = ['C', 'A', 'L'];
+            const levelColors = ['#4cc9f0', '#f8961e', '#f72585'];
+            
+            // 根据当前算法确定等级位置
+            let levelPositions;
+            if (currentAlgorithm === 1) {
+                // LOWER IS BETTER: 数值越小越好，L在底部，C在顶部
+                levelPositions = [
+                    yScale(yMax * 0.8 + yMin * 0.2), // C (顶部)
+                    yScale((yMax + yMin) / 2),       // A (中间)
+                    yScale(yMax * 0.2 + yMin * 0.8)  // L (底部)
+                ];
+            } else {
+                // HIGHER IS BETTER: 数值越大越好，L在顶部，C在底部
+                levelPositions = [
+                    yScale(yMax * 0.2 + yMin * 0.8), // C (底部)
+                    yScale((yMax + yMin) / 2),       // A (中间)
+                    yScale(yMax * 0.8 + yMin * 0.2)  // L (顶部)
+                ];
+            }
+            
+            // 绘制右侧Y轴标题
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#4cc9f0';
+            ctx.font = '14px Arial';
+            ctx.translate(margin.left + chartWidth + 40, margin.top + chartHeight / 2);
+            ctx.rotate(Math.PI / 2);
+            ctx.fillText('性能带宽等级', 0, 0);
+            ctx.restore();
+            
+            // 绘制等级标签（只显示L、A、C）
+            for (let i = 0; i < levelLabels.length; i++) {
+                const y = levelPositions[i];
+                const label = levelLabels[i];
+                const color = levelColors[i];
+                
+                // 在右侧绘制等级标签
+                ctx.fillStyle = color;
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(label, margin.left + chartWidth + 15, y);
+            }
+        }
+        
         // 重置显示
         function resetDisplay() {
             countValue.textContent = '0';
@@ -1148,10 +1528,23 @@
                 rangeU.textContent = '(-∞, 0.00]';
             }
             
+            // 清除分类显示
             classL.innerHTML = '<span class="no-data">暂无数据</span>';
             classA.innerHTML = '<span class="no-data">暂无数据</span>';
             classC.innerHTML = '<span class="no-data">暂无数据</span>';
             classU.innerHTML = '<span class="no-data">暂无数据</span>';
+            
+            // 清除图表
+            const canvas = document.getElementById('dataChart');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            
+            // 清除边界线
+            const existingLines = chartContainer.querySelectorAll('.boundary-line, .boundary-label');
+            existingLines.forEach(el => el.remove());
+            
             errorMsg.style.display = 'none';
         }
         
@@ -1167,6 +1560,24 @@
             
             // 初始化算法显示
             updateAlgorithmDisplay();
+        });
+        
+        // 窗口大小变化时重新绘制图表
+        window.addEventListener('resize', function() {
+            // 检查是否有数据，如果有则重新绘制
+            const inputs = document.querySelectorAll('.number-input');
+            const values = [];
+            
+            inputs.forEach(input => {
+                const value = parseFloat(input.value);
+                if (!isNaN(value)) {
+                    values.push(value);
+                }
+            });
+            
+            if (values.length >= 2) {
+                calcBtn.click();
+            }
         });
     </script>
 </body>
