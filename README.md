@@ -1,3 +1,1 @@
-性能带宽计算器
-Android：见apk文件
-Webapp：https://shaw2023.github.io/lacu/
+性能带宽计算器，也可以直接采用网页版：https://shaw2023.github.io/lacu/
