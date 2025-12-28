@@ -20,6 +20,442 @@
             padding: 10px;
             max-width: 100%;
             overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        /* 汉堡菜单按钮 - 显著加大 */
+        .hamburger-menu-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 50px; /* 显著加大：从40px增加到50px */
+            height: 50px; /* 显著加大：从40px增加到50px */
+            border-radius: 8px; /* 增加圆角 */
+            background: none;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .hamburger-menu-btn:hover {
+            background-color: rgba(106, 17, 203, 0.2); /* 加深hover效果 */
+        }
+        
+        /* 三横线图标 - 优化：加长、变细、间距缩小，增加透明度 */
+        .hamburger-icon {
+            width: 50px; /* 显著加长：从45px增加到50px */
+            height: 24px; /* 减小高度：从30px减小到24px */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* 改为space-between，使三条线间距均匀分布 */
+            align-items: center;
+        }
+        
+        .hamburger-icon span {
+            display: block;
+            width: 100%;
+            height: 3px; /* 变细：从4px减少到3px */
+            background-color: rgba(224, 230, 239, 0.7); /* 增加透明度：从完全不透明改为70%不透明 */
+            border-radius: 1.5px; /* 调整圆角 */
+            transition: all 0.3s ease;
+        }
+        
+        /* 主内容区域 */
+        .main-content {
+            min-height: 100vh;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+        
+        .main-content.settings-open {
+            transform: translateX(50%);
+            filter: brightness(0.7);
+            overflow: hidden !important;
+            touch-action: none;
+            height: 100vh;
+            position: fixed;
+            width: 100%;
+        }
+        
+        /* 设置面板 - 已移除右上角X按钮 */
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            left: -50%;
+            width: 50%;
+            height: 100vh;
+            background: #1e2430;
+            border-right: 1px solid #2a3140;
+            z-index: 99;
+            overflow-y: auto;
+            padding: 20px;
+            transition: left 0.3s ease;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .settings-panel.open {
+            left: 0;
+        }
+        
+        .settings-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #2a3140;
+        }
+        
+        .settings-title {
+            font-size: 1.3rem;
+            color: #e0e6ef;
+            margin-left: 10px;
+        }
+        
+        /* 简洁的设置项样式 */
+        .settings-item {
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .item-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 1px solid transparent;
+        }
+        
+        .item-header:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .item-header.active {
+            border-bottom: 1px solid #2a3140;
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+        
+        .item-content-wrapper {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            gap: 12px;
+        }
+        
+        .item-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        
+        .update-icon {
+            background: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+        }
+        
+        .share-icon {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+        
+        .about-icon {
+            background: rgba(155, 89, 182, 0.1);
+            color: #9b59b6;
+        }
+        
+        .item-text {
+            flex-grow: 1;
+        }
+        
+        .item-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #e0e6ef;
+        }
+        
+        .item-desc {
+            font-size: 0.8rem;
+            color: #a0a6b0;
+            margin-top: 3px;
+        }
+        
+        /* 移除三角标识，不显示任何箭头 */
+        .item-toggle {
+            display: none;
+        }
+        
+        .item-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+        
+        .item-content.active {
+            max-height: 500px;
+            transition: max-height 0.5s ease-in;
+        }
+        
+        .content-inner {
+            padding: 15px;
+            padding-top: 10px;
+        }
+        
+        /* 检测更新内容样式 */
+        .update-content {
+            text-align: center;
+            padding: 10px 0;
+        }
+        
+        .update-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            color: #e0e6ef;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .check-update-btn {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 0 auto;
+            height: 40px; /* 固定高度 */
+            min-width: 120px; /* 最小宽度 */
+            position: relative; /* 为旋转圆圈定位 */
+        }
+        
+        .check-update-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(106, 17, 203, 0.5);
+        }
+        
+        .check-update-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        /* 分享选项样式 - 横排布局 */
+        .share-options {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .share-option {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            background: #2a3140;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            min-height: 120px;
+        }
+        
+        .share-option:hover {
+            background: #3a4255;
+            transform: translateY(-2px);
+        }
+        
+        .share-option-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .share-option-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #e0e6ef;
+            margin-bottom: 5px;
+        }
+        
+        .share-option-desc {
+            font-size: 0.8rem;
+            color: #a0a6b0;
+        }
+        
+        .copy-success {
+            color: #2ecc71;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            display: none;
+            text-align: center;
+        }
+        
+        /* 分享提示文字样式 - 修改：左侧对齐，添加句号 */
+        .share-hint {
+            color: #e0e6ef;
+            font-size: 0.9rem;
+            text-align: left; /* 修改：从center改为left */
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        /* 二维码弹窗样式 */
+        .qrcode-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .qrcode-modal-content {
+            background: #1e2430;
+            border-radius: 15px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #2a3140;
+            text-align: center;
+        }
+        
+        .qrcode-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #2a3140;
+        }
+        
+        .qrcode-modal-title {
+            font-size: 1.3rem;
+            color: #e0e6ef;
+        }
+        
+        .close-qrcode-modal {
+            background: none;
+            border: none;
+            color: #a0a6b0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .close-qrcode-modal:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #e0e6ef;
+        }
+        
+        .qrcode-placeholder {
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            margin: 0 auto 20px;
+            display: inline-block;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .qrcode-placeholder-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .qrcode-placeholder-text {
+            color: #666;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        .qrcode-hint {
+            color: #a0a6b0;
+            font-size: 0.9rem;
+            margin-top: 15px;
+        }
+        
+        .about-content {
+            line-height: 1.6;
+            padding: 10px 0;
+        }
+        
+        .about-content p {
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            color: #e0e6ef;
+        }
+        
+        .version-info {
+            background: #2a3140;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 15px;
+        }
+        
+        .version-info p {
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+            color: #a0a6b0;
+        }
+        
+        .version {
+            color: #6a11cb;
+            font-weight: 600;
+        }
+        
+        /* 检测更新旋转圆圈 - 优化：与文字居中对齐 */
+        .spinner {
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 2px solid #6a11cb;
+            width: 16px; /* 稍微增大，确保可见性 */
+            height: 16px; /* 稍微增大，确保可见性 */
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         .container {
@@ -36,6 +472,8 @@
             border-radius: 15px;
             margin-bottom: 20px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            /* 不添加左侧padding，保持原始布局 */
         }
         
         h1 {
@@ -76,6 +514,8 @@
             display: flex;
             align-items: center;
             white-space: nowrap;
+            flex-grow: 1;
+            min-width: 0; /* 防止文本溢出 */
         }
         
         .card-title i {
@@ -83,7 +523,7 @@
             color: #6a11cb;
         }
         
-        /* 简化版模式切换按钮 - 放在数据输入标题右侧 */
+        /* 模式切换按钮样式 */
         .mode-toggle-btn {
             min-width: 70px;
             height: 30px;
@@ -121,6 +561,75 @@
             background: rgba(46, 204, 113, 0.4); /* 绿色加深 */
         }
         
+        /* 图表下载按钮样式 - 使用第一个图标（简洁箭头） */
+        .download-chart-btn {
+            width: 30px; /* 与模式切换按钮高度一致 */
+            height: 30px;
+            border-radius: 6px; /* 与模式切换按钮一致 */
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            padding: 0;
+            flex-shrink: 0;
+            position: relative;
+            margin-right: 0; /* 确保对齐 */
+        }
+        
+        .download-chart-btn:hover {
+            background-color: rgba(106, 17, 203, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .download-chart-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* 使用第一个图标：简洁箭头 */
+        .download-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            position: relative;
+        }
+        
+        .download-icon::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-top: 12px solid #e0e6ef;
+        }
+        
+        .download-icon::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 17px;
+            height: 2px;
+            background-color: #e0e6ef;
+            border-radius: 1px;
+        }
+        
+        .download-chart-btn:hover .download-icon::before {
+            border-top-color: #6a11cb;
+        }
+        
+        .download-chart-btn:hover .download-icon::after {
+            background-color: #6a11cb;
+        }
+        
+        /* 输入框样式 */
         .input-section textarea {
             width: 100%;
             min-height: 100px;
@@ -132,8 +641,13 @@
             resize: none;
             transition: all 0.3s;
             background-color: #2a3140;
-            color: #e0e6ef;
+            color: #e0e6ef; /* 正常文本颜色 */
             overflow-y: auto;
+        }
+        
+        /* 提示文本样式 - 新增 */
+        .input-section textarea.placeholder-text {
+            color: #a0a6b0; /* 浅色提示文本，与.input-hint颜色一致 */
         }
         
         .input-section textarea:focus {
@@ -279,9 +793,8 @@
             border-left: 4px solid #6a11cb;
         }
         
-        /* 修复其他卡片的标题布局 */
+        /* 修复：移除chart-section的特殊样式，使用通用样式 */
         .results-section .card-title,
-        .chart-section .card-title,
         .lacu-definition-section .card-title {
             display: block;
             padding-bottom: 10px;
@@ -289,8 +802,22 @@
         }
         
         .results-section .card-title-text,
-        .chart-section .card-title-text,
         .lacu-definition-section .card-title-text {
+            display: flex;
+            align-items: center;
+        }
+        
+        /* 特别为chart-section保持flex布局 */
+        .chart-section .card-title {
+            /* 保持flex布局，不要覆盖为block */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2a3140;
+        }
+        
+        .chart-section .card-title-text {
             display: flex;
             align-items: center;
         }
@@ -315,7 +842,7 @@
             border-top: 1px solid #2a3140;
         }
         
-        /* 响应式设计 - 保持横向布局，只调整字体大小 */
+        /* 响应式设计 */
         @media (max-width: 768px) {
             .lacu-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -356,16 +883,103 @@
                 padding: 0 6px;
             }
             
+            /* 确保在手机端标题文本不会过长 */
+            .card-title-text {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: calc(100% - 50px); /* 为按钮留出空间 */
+            }
+            
+            .download-chart-btn {
+                width: 28px;
+                height: 28px;
+            }
+            
+            .download-icon {
+                width: 22px;
+                height: 22px;
+            }
+            
+            .download-icon::before {
+                border-left: 6px solid transparent;
+                border-right: 6px solid transparent;
+                border-top: 10px solid #e0e6ef;
+            }
+            
+            .download-icon::after {
+                width: 15px;
+                height: 2px;
+            }
+            
             .footer {
                 font-size: 0.8rem;
                 padding: 15px 0;
             }
+            
+            /* 手机端设置面板宽度 */
+            .settings-panel {
+                width: 85%;
+                left: -85%;
+            }
+            
+            .main-content.settings-open {
+                transform: translateX(85%);
+            }
+            
+            /* 手机端三横线也优化 */
+            .hamburger-menu-btn {
+                top: 18px;
+                left: 18px;
+                width: 46px; /* 手机端也加大 */
+                height: 46px; /* 手机端也加大 */
+            }
+            
+            .hamburger-icon {
+                width: 40px; /* 手机端也加长 */
+                height: 20px; /* 手机端减小高度 */
+            }
+            
+            .hamburger-icon span {
+                height: 3px; /* 保持加粗 */
+                background-color: rgba(224, 230, 239, 0.7); /* 保持透明度 */
+            }
+            
+            /* 手机端分享选项保持横排 */
+            .share-options {
+                flex-direction: row;
+                gap: 10px;
+            }
+            
+            .share-option {
+                padding: 12px;
+                min-height: 110px;
+            }
+            
+            .share-option-icon {
+                font-size: 1.8rem;
+                height: 35px;
+            }
+            
+            .share-option-title {
+                font-size: 0.85rem;
+            }
+            
+            .share-option-desc {
+                font-size: 0.75rem;
+            }
         }
         
         @media (max-width: 480px) {
+            /* 手机端按钮保持横向排列 */
+            .btn-group-3 {
+                grid-template-columns: 1fr 1fr 1fr; /* 保持三列布局 */
+                gap: 8px;
+            }
+            
             .btn-group-3 button {
-                font-size: 0.9rem;
-                padding: 12px 8px;
+                font-size: 0.85rem;
+                padding: 12px 6px;
             }
             
             .btn-group-3 button span.long-text {
@@ -409,6 +1023,115 @@
                 font-size: 0.75rem;
                 padding: 0 5px;
             }
+            
+            .download-chart-btn {
+                width: 26px;
+                height: 26px;
+            }
+            
+            .download-icon {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .download-icon::before {
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-top: 9px solid #e0e6ef;
+            }
+            
+            .download-icon::after {
+                width: 13px;
+                height: 2px;
+            }
+            
+            /* 在超小屏幕上进一步调整标题文本 */
+            .card-title-text {
+                max-width: calc(100% - 40px);
+            }
+            
+            /* 超小屏幕设置面板宽度 */
+            .settings-panel {
+                width: 85%;
+                left: -85%;
+            }
+            
+            .main-content.settings-open {
+                transform: translateX(85%);
+            }
+            
+            /* 超小屏幕三横线也优化 */
+            .hamburger-menu-btn {
+                top: 15px;
+                left: 15px;
+                width: 44px; /* 超小屏幕也加大 */
+                height: 44px; /* 超小屏幕也加大 */
+            }
+            
+            .hamburger-icon {
+                width: 38px; /* 超小屏幕也加长 */
+                height: 18px; /* 超小屏幕减小高度 */
+            }
+            
+            .hamburger-icon span {
+                height: 2.5px; /* 进一步变细 */
+                background-color: rgba(224, 230, 239, 0.7); /* 保持透明度 */
+            }
+            
+            .settings-header {
+                margin-bottom: 20px;
+            }
+            
+            .settings-title {
+                font-size: 1.2rem;
+            }
+            
+            .item-header {
+                padding: 12px;
+            }
+            
+            .content-inner {
+                padding: 12px;
+                padding-top: 8px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            /* 超小屏幕分享选项调整 */
+            .share-options {
+                gap: 8px;
+            }
+            
+            .share-option {
+                padding: 10px 8px;
+                min-height: 100px;
+            }
+            
+            .share-option-icon {
+                font-size: 1.6rem;
+                height: 30px;
+                margin-bottom: 8px;
+            }
+            
+            .share-option-title {
+                font-size: 0.8rem;
+            }
+            
+            .share-option-desc {
+                font-size: 0.7rem;
+            }
+            
+            .qrcode-placeholder {
+                width: 180px;
+                height: 180px;
+                padding: 20px;
+            }
+            
+            .qrcode-placeholder-icon {
+                font-size: 3rem;
+            }
         }
         
         @media (max-width: 360px) {
@@ -421,9 +1144,52 @@
                 font-size: 0.7rem;
             }
             
+            .download-chart-btn {
+                width: 24px;
+                height: 24px;
+            }
+            
+            .download-icon {
+                width: 18px;
+                height: 18px;
+            }
+            
+            .download-icon::before {
+                border-left: 4px solid transparent;
+                border-right: 4px solid transparent;
+                border-top: 8px solid #e0e6ef;
+            }
+            
+            .download-icon::after {
+                width: 12px;
+                height: 1.5px;
+            }
+            
             .footer {
                 font-size: 0.75rem;
                 padding: 10px 0;
+            }
+            
+            /* 超小屏幕按钮调整 */
+            .btn-group-3 button {
+                font-size: 0.8rem;
+                padding: 10px 4px;
+            }
+            
+            /* 超小屏幕三横线保持优化 */
+            .hamburger-menu-btn {
+                width: 42px; /* 超小屏幕保持加大 */
+                height: 42px; /* 超小屏幕保持加大 */
+            }
+            
+            .hamburger-icon {
+                width: 36px; /* 超小屏幕保持加长 */
+                height: 16px; /* 超小屏幕减小高度 */
+            }
+            
+            .hamburger-icon span {
+                height: 2px; /* 超小屏幕进一步变细 */
+                background-color: rgba(224, 230, 239, 0.7); /* 保持透明度 */
             }
         }
         
@@ -440,7 +1206,7 @@
             color: #6a11cb;
         }
         
-        .spinner {
+        .loading-spinner {
             border: 4px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             border-top: 4px solid #6a11cb;
@@ -457,123 +1223,224 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>性能带宽计算器</h1>
-            <p class="subtitle">输入样本数据，自动计算均值、标准差，确定L、A、C、U带宽区间</p>
-        </header>
+    <button class="hamburger-menu-btn" id="hamburgerMenuBtn">
+        <div class="hamburger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </button>
+    
+    <div class="main-content" id="mainContent">
+        <div class="container">
+            <header>
+                <h1>性能带宽计算器</h1>
+                <p class="subtitle">输入样本数据，自动计算均值、标准差，确定L、A、C、U带宽区间</p>
+            </header>
+            
+            <main>
+                <section class="card input-section">
+                    <h2 class="card-title">
+                        <div class="card-title-text">
+                            <span>📊</span> 数据输入
+                        </div>
+                        <button id="modeToggleBtn" class="mode-toggle-btn small-better" title="当前模式：数值越小越好，点击切换为越大越好">
+                            <span class="mode-icon">⇅</span>
+                            <span class="mode-text">小好</span>
+                        </button>
+                    </h2>
+                    <textarea id="dataInput" placeholder="请输入样本数据，用逗号、空格或换行分隔。例如：4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18"></textarea>
+                    <p class="input-hint">请输入至少3个数值，以计算有效的统计结果。</p>
+                    
+                    <div class="btn-group-3">
+                        <button class="btn-primary" id="calculateBtn">
+                            <span class="long-text">计算并绘制图表</span>
+                            <span class="short-text">计算</span>
+                        </button>
+                        <button class="btn-secondary" id="sampleDataBtn">
+                            <span class="long-text">使用示例数据</span>
+                            <span class="short-text">示例</span>
+                        </button>
+                        <button class="btn-danger" id="clearDataBtn">
+                            <span class="long-text">清除全部数据</span>
+                            <span class="short-text">清除</span>
+                        </button>
+                    </div>
+                    
+                    <div class="loading" id="loadingIndicator">
+                        <div class="loading-spinner"></div>
+                        <p>正在计算并绘制图表...</p>
+                    </div>
+                </section>
+                
+                <section class="card results-section" id="resultsCard" style="display: none;">
+                    <h2 class="card-title">
+                        <div class="card-title-text">
+                            <span>📈</span> 计算结果
+                        </div>
+                    </h2>
+                    
+                    <div class="lacu-container">
+                        <div class="lacu-grid">
+                            <div class="lacu-box L-box">
+                                <div class="lacu-label L-label">L</div>
+                                <div class="lacu-range" id="lRangeDisplay">(-∞, 0.00]</div>
+                            </div>
+                            <div class="lacu-box A-box">
+                                <div class="lacu-label A-label">A</div>
+                                <div class="lacu-range" id="aRangeDisplay">(0.00, 0.00]</div>
+                            </div>
+                            <div class="lacu-box C-box">
+                                <div class="lacu-label C-label">C</div>
+                                <div class="lacu-range" id="cRangeDisplay">(0.00, 0.00]</div>
+                            </div>
+                            <div class="lacu-box U-box">
+                                <div class="lacu-label U-label">U</div>
+                                <div class="lacu-range" id="uRangeDisplay">(0.00, +∞)</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-summary">
+                        <div>均值: <span id="meanValue">0.00</span></div>
+                        <div>标准差: <span id="stdValue">0.00</span></div>
+                        <div>有效数据: <span id="validCount">0</span>/<span id="totalCount">0</span></div>
+                    </div>
+                </section>
+                
+                <section class="card chart-section" id="chartCard" style="display: none;">
+                    <h2 class="card-title">
+                        <div class="card-title-text">
+                            <span>📊</span> 性能带宽分布
+                        </div>
+                        <button id="downloadChartBtn" class="download-chart-btn" title="下载图表图片">
+                            <span class="download-icon"></span>
+                        </button>
+                    </h2>
+                    
+                    <div class="chart-container">
+                        <canvas id="bandwidthChart"></canvas>
+                    </div>
+                    
+                    <div class="note">
+                        <p><strong>说明:</strong></p>
+                        <p id="chartDescription">柱状图按数据值从高到低排列，不同颜色表示不同的LACU区间。</p>
+                    </div>
+                </section>
+                
+                <section class="card lacu-definition-section">
+                    <h2 class="card-title">
+                        <div class="card-title-text">
+                            <span>ℹ️</span> LACU区间定义
+                        </div>
+                    </h2>
+                    <div class="note" id="lacuDefinition">
+                        <p><strong>L (Leader):</strong> 数值 ≤ 均值 - 1.25 × 标准差</p>
+                        <p><strong>A (Among the Leaders):</strong> 均值 - 1.25 × 标准差 < 数值 ≤ 均值 - 0.5 × 标准差</p>
+                        <p><strong>C (Competitive):</strong> 均值 - 0.5 × 标准差 < 数值 ≤ 均值 + 0.5 × 标准差</p>
+                        <p><strong>U (Uncompetitive):</strong> 数值 > 均值 + 0.5 × 标准差</p>
+                        <p style="margin-top: 10px;"><em>注：标准差使用无偏估计公式计算（除以n-1）</em></p>
+                    </div>
+                </section>
+            </main>
+            
+            <footer class="footer">
+                性能带宽计算器 © 2025 | 横屏显示效果更佳
+            </footer>
+        </div>
+    </div>
+    
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <div class="settings-title">
+                ⚙️ 设置
+            </div>
+        </div>
         
-        <main>
-            <section class="card input-section">
-                <h2 class="card-title">
-                    <div class="card-title-text">
-                        <span>📊</span> 数据输入
+        <div class="settings-item" id="updateItem">
+            <div class="item-header" id="updateHeader">
+                <div class="item-content-wrapper">
+                    <div class="item-icon update-icon">
+                        🔄
                     </div>
-                    <!-- 简化版模式切换按钮放在数据输入标题右侧 -->
-                    <button id="modeToggleBtn" class="mode-toggle-btn small-better" title="当前模式：数值越小越好，点击切换为越大越好">
-                        <span class="mode-icon">⇅</span>
-                        <span class="mode-text">小好</span>
-                    </button>
-                </h2>
-                <textarea id="dataInput" placeholder="请输入样本数据，用逗号、空格或换行分隔。例如：4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18"></textarea>
-                <p class="input-hint">请输入至少3个数值，以计算有效的统计结果。</p>
-                
-                <div class="btn-group-3">
-                    <button class="btn-primary" id="calculateBtn">
-                        <span class="long-text">计算并绘制图表</span>
-                        <span class="short-text">计算</span>
-                    </button>
-                    <button class="btn-secondary" id="sampleDataBtn">
-                        <span class="long-text">使用示例数据</span>
-                        <span class="short-text">示例</span>
-                    </button>
-                    <button class="btn-danger" id="clearDataBtn">
-                        <span class="long-text">清除全部数据</span>
-                        <span class="short-text">清除</span>
-                    </button>
-                </div>
-                
-                <div class="loading" id="loadingIndicator">
-                    <div class="spinner"></div>
-                    <p>正在计算并绘制图表...</p>
-                </div>
-            </section>
-            
-            <section class="card results-section" id="resultsCard" style="display: none;">
-                <h2 class="card-title">
-                    <div class="card-title-text">
-                        <span>📈</span> 计算结果
+                    <div class="item-text">
+                        <div class="item-title">检测更新</div>
+                        <div class="item-desc">检查应用是否有新版本可用</div>
                     </div>
-                </h2>
-                
-                <!-- LACU区间方块 -->
-                <div class="lacu-container">
-                    <div class="lacu-grid">
-                        <div class="lacu-box L-box">
-                            <div class="lacu-label L-label">L</div>
-                            <div class="lacu-range" id="lRangeDisplay">(-∞, 0.00]</div>
+                </div>
+            </div>
+            <div class="item-content" id="updateContent">
+                <div class="content-inner">
+                    <div class="update-content">
+                        <div class="update-status" id="updateStatus">
+                            <span>当前版本：v1.0.0</span>
                         </div>
-                        <div class="lacu-box A-box">
-                            <div class="lacu-label A-label">A</div>
-                            <div class="lacu-range" id="aRangeDisplay">(0.00, 0.00]</div>
-                        </div>
-                        <div class="lacu-box C-box">
-                            <div class="lacu-label C-label">C</div>
-                            <div class="lacu-range" id="cRangeDisplay">(0.00, 0.00]</div>
-                        </div>
-                        <div class="lacu-box U-box">
-                            <div class="lacu-label U-label">U</div>
-                            <div class="lacu-range" id="uRangeDisplay">(0.00, +∞)</div>
-                        </div>
+                        <button class="check-update-btn" id="checkUpdateBtn">
+                            <span id="updateBtnText">检查更新</span>
+                            <span class="spinner" id="updateSpinner"></span>
+                        </button>
                     </div>
                 </div>
-                
-                <!-- 统计摘要 -->
-                <div class="stats-summary">
-                    <div>均值: <span id="meanValue">0.00</span></div>
-                    <div>标准差: <span id="stdValue">0.00</span></div>
-                    <div>有效数据: <span id="validCount">0</span>/<span id="totalCount">0</span></div>
-                </div>
-            </section>
-            
-            <section class="card chart-section" id="chartCard" style="display: none;">
-                <h2 class="card-title">
-                    <div class="card-title-text">
-                        <span>📊</span> 性能带宽分布
-                    </div>
-                </h2>
-                
-                <div class="chart-container">
-                    <canvas id="bandwidthChart"></canvas>
-                </div>
-                
-                <div class="note">
-                    <p><strong>说明:</strong></p>
-                    <p id="chartDescription">柱状图按数据值从高到低排列，不同颜色表示不同的LACU区间。</p>
-                </div>
-            </section>
-            
-            <section class="card lacu-definition-section">
-                <h2 class="card-title">
-                    <div class="card-title-text">
-                        <span>ℹ️</span> LACU区间定义
-                    </div>
-                </h2>
-                <div class="note" id="lacuDefinition">
-                    <!-- 这里会动态更新当前模式 -->
-                    <p><strong>L (Leader):</strong> 数值 ≤ 均值 - 1.25 × 标准差</p>
-                    <p><strong>A (Among the Leaders):</strong> 均值 - 1.25 × 标准差 < 数值 ≤ 均值 - 0.5 × 标准差</p>
-                    <p><strong>C (Competitive):</strong> 均值 - 0.5 × 标准差 < 数值 ≤ 均值 + 0.5 × 标准差</p>
-                    <p><strong>U (Uncompetitive):</strong> 数值 > 均值 + 0.5 × 标准差</p>
-                    <p style="margin-top: 10px;"><em>注：标准差使用无偏估计公式计算（除以n-1）</em></p>
-                </div>
-            </section>
-        </main>
+            </div>
+        </div>
         
-        <!-- 新增页脚 -->
-        <footer class="footer">
-            性能带宽计算器 © 2025 | 横屏显示效果更佳
-        </footer>
+        <div class="settings-item" id="shareItem">
+            <div class="item-header" id="shareHeader">
+                <div class="item-content-wrapper">
+                    <div class="item-icon share-icon">
+                        📤
+                    </div>
+                    <div class="item-text">
+                        <div class="item-title">分享应用</div>
+                        <div class="item-desc">分享下载链接给好友</div>
+                    </div>
+                </div>
+            </div>
+            <div class="item-content" id="shareContent">
+                <div class="content-inner">
+                    </div>
+            </div>
+        </div>
+        
+        <div class="settings-item" id="aboutItem">
+            <div class="item-header" id="aboutHeader">
+                <div class="item-content-wrapper">
+                    <div class="item-icon about-icon">
+                        ℹ️
+                    </div>
+                    <div class="item-text">
+                        <div class="item-title">关于</div>
+                        <div class="item-desc">关于性能带宽计算器的信息</div>
+                    </div>
+                </div>
+            </div>
+            <div class="item-content" id="aboutContent">
+                <div class="content-inner">
+                    <div class="about-content">
+                        <p>性能带宽计算器是一款专业的统计分析工具，适用于性能分析、质量管控、数据评估等多种场景，帮助用户快速了解数据分布特征。</p>
+                        
+                        <div class="version-info">
+                            <p>当前版本：<span class="version">v1.0.0</span></p>
+                            <p>更新日期：2025年12月</p> <p>开发者：性能带宽计算器团队</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="qrcode-modal" id="qrcodeModal">
+        <div class="qrcode-modal-content">
+            <div class="qrcode-modal-header">
+                <h3 class="qrcode-modal-title">二维码分享</h3>
+                <button class="close-qrcode-modal" id="closeQrcodeModal">&times;</button>
+            </div>
+            <div class="qrcode-placeholder">
+                <div class="qrcode-placeholder-icon">📱</div>
+                <div class="qrcode-placeholder-text">二维码分享功能<br>当前不可用</div>
+            </div>
+            <p class="qrcode-hint">请使用复制链接功能分享应用</p>
+        </div>
     </div>
 
     <script>
@@ -590,6 +1457,7 @@
         const sampleDataBtn = document.getElementById('sampleDataBtn');
         const clearDataBtn = document.getElementById('clearDataBtn');
         const modeToggleBtn = document.getElementById('modeToggleBtn');
+        const downloadChartBtn = document.getElementById('downloadChartBtn'); // 新增
         const loadingIndicator = document.getElementById('loadingIndicator');
         const resultsCard = document.getElementById('resultsCard');
         const chartCard = document.getElementById('chartCard');
@@ -609,10 +1477,329 @@
         // 示例数据 - 修改为：4.4,3.75,6.23,4.65,4.35,6.84,5.5,4.81,4.95,5.18
         const sampleData = [4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18];
         
+        // 设置面板相关元素
+        const mainContent = document.getElementById('mainContent');
+        const hamburgerMenuBtn = document.getElementById('hamburgerMenuBtn');
+        const settingsPanel = document.getElementById('settingsPanel');
+        
+        // 设置项元素
+        const updateItem = document.getElementById('updateItem');
+        const shareItem = document.getElementById('shareItem');
+        const aboutItem = document.getElementById('aboutItem');
+        
+        const updateHeader = document.getElementById('updateHeader');
+        const shareHeader = document.getElementById('shareHeader');
+        const aboutHeader = document.getElementById('aboutHeader');
+        
+        const updateContent = document.getElementById('updateContent');
+        const shareContent = document.getElementById('shareContent');
+        const aboutContent = document.getElementById('aboutContent');
+        
+        // 检测更新相关元素
+        const checkUpdateBtn = document.getElementById('checkUpdateBtn');
+        const updateStatus = document.getElementById('updateStatus');
+        const updateSpinner = document.getElementById('updateSpinner');
+        const updateBtnText = document.getElementById('updateBtnText');
+        
+        // 二维码弹窗元素
+        const qrcodeModal = document.getElementById('qrcodeModal');
+        const closeQrcodeModal = document.getElementById('closeQrcodeModal');
+        
+        // 控制设置面板显示/隐藏
+        let isSettingsOpen = false;
+        let currentOpenItem = null;
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        
+        // 分享内容
+        const shareText = "我正在使用性能带宽计算器，非常好用，推荐给你一起使用，让数据分析更简单！下载链接：http://141.148.180.246/app-release.apk";
+        
+        // 创建分享选项内容
+        function createShareOptions() {
+            const shareInnerHTML = `
+                <div class="share-content">
+                    <div class="share-hint">推荐给朋友一起使用，让数据分析更简单。</div>
+                    <div class="share-options">
+                        <div class="share-option" id="copyLinkOption">
+                            <div class="share-option-icon">🔗</div>
+                            <div class="share-option-text">
+                                <div class="share-option-title">复制链接</div>
+                                <div class="share-option-desc">复制下载链接</div>
+                            </div>
+                        </div>
+                        
+                        <div class="share-option" id="qrcodeShareOption">
+                            <div class="share-option-icon">📱</div>
+                            <div class="share-option-text">
+                                <div class="share-option-title">二维码分享</div>
+                                <div class="share-option-desc">生成二维码供好友扫描</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="copySuccess" class="copy-success">✓ 链接已复制到剪贴板</div>
+                </div>
+            `;
+            
+            return shareInnerHTML;
+        }
+        
+        // 初始化分享设置项
+        function initShareSection() {
+            const contentInner = shareContent.querySelector('.content-inner');
+            contentInner.innerHTML = createShareOptions();
+            
+            // 获取新创建的元素
+            const copyLinkOption = document.getElementById('copyLinkOption');
+            const qrcodeShareOption = document.getElementById('qrcodeShareOption');
+            const copySuccess = document.getElementById('copySuccess');
+            
+            // 复制链接功能
+            copyLinkOption.addEventListener('click', () => {
+                copyToClipboard(shareText);
+                copySuccess.style.display = 'block';
+                
+                // 3秒后隐藏成功提示
+                setTimeout(() => {
+                    copySuccess.style.display = 'none';
+                }, 3000);
+            });
+            
+            // 二维码分享功能
+            qrcodeShareOption.addEventListener('click', () => {
+                openQrcodeModal();
+            });
+        }
+        
+        // 切换设置面板
+        function toggleSettingsPanel() {
+            isSettingsOpen = !isSettingsOpen;
+            
+            if (isSettingsOpen) {
+                settingsPanel.classList.add('open');
+                mainContent.classList.add('settings-open');
+                hamburgerMenuBtn.style.display = 'none';
+                
+                // 禁用主内容区域滚动
+                document.body.style.overflow = 'hidden';
+            } else {
+                settingsPanel.classList.remove('open');
+                mainContent.classList.remove('settings-open');
+                hamburgerMenuBtn.style.display = 'flex';
+                
+                // 启用主内容区域滚动
+                document.body.style.overflow = 'auto';
+            }
+        }
+        
+        // 切换设置项展开/收起
+        function toggleItem(header, content) {
+            const isActive = header.classList.contains('active');
+            
+            // 如果当前有展开的项目，先收起它
+            if (currentOpenItem && currentOpenItem !== header) {
+                const currentContent = currentOpenItem.nextElementSibling;
+                
+                currentOpenItem.classList.remove('active');
+                currentContent.classList.remove('active');
+            }
+            
+            // 切换当前项目的状态
+            if (isActive) {
+                // 如果是当前项目且已展开，则收起
+                header.classList.remove('active');
+                content.classList.remove('active');
+                currentOpenItem = null;
+            } else {
+                // 如果未展开，则展开
+                header.classList.add('active');
+                content.classList.add('active');
+                currentOpenItem = header;
+                
+                // 如果是分享设置项，初始化分享内容
+                if (header === shareHeader) {
+                    // 确保分享内容已初始化
+                    if (!shareContent.querySelector('.share-options')) {
+                        initShareSection();
+                    }
+                }
+            }
+        }
+        
+        // 打开二维码弹窗
+        function openQrcodeModal() {
+            qrcodeModal.style.display = 'flex';
+        }
+        
+        // 关闭二维码弹窗
+        function closeQrcodeModalFunc() {
+            qrcodeModal.style.display = 'none';
+        }
+        
+        // 复制到剪贴板
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text)
+                    .then(() => {
+                        console.log('内容已复制到剪贴板:', text);
+                    })
+                    .catch(err => {
+                        console.error('复制失败:', err);
+                        fallbackCopyText(text);
+                    });
+            } else {
+                fallbackCopyText(text);
+            }
+        }
+        
+        // 降级复制方法
+        function fallbackCopyText(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = 0;
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (!successful) {
+                    alert('复制失败，请手动复制内容');
+                }
+            } catch (err) {
+                console.error('复制失败:', err);
+                alert('复制失败，请手动复制内容');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        // 检查更新功能
+        checkUpdateBtn.addEventListener('click', () => {
+            // 显示加载状态
+            updateSpinner.style.display = 'inline-block';
+            updateBtnText.textContent = '检查中...';
+            checkUpdateBtn.disabled = true;
+            
+            // 模拟网络请求延迟
+            setTimeout(() => {
+                // 更新状态显示 - 简化版，不显示额外信息
+                updateStatus.innerHTML = '<span style="color: #2ecc71; font-weight: bold;">当前已是最新版本</span>';
+                
+                // 恢复按钮状态
+                updateSpinner.style.display = 'none';
+                updateBtnText.textContent = '检查更新';
+                checkUpdateBtn.disabled = false;
+            }, 1500);
+        });
+        
+        // 触摸事件处理 - 用于左滑关闭
+        function handleTouchStart(e) {
+            if (!isSettingsOpen) return;
+            
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }
+        
+        function handleTouchEnd(e) {
+            if (!isSettingsOpen) return;
+            
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            
+            // 计算滑动距离
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            
+            // 如果主要是水平滑动且向左滑动距离大于50px，则关闭设置面板
+            if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX < -50) {
+                toggleSettingsPanel();
+            }
+        }
+        
+        // 使用指定数据计算（不依赖输入框）
+        function calculateWithData(dataArray) {
+            currentData = [...dataArray];
+            
+            // 计算统计值
+            mean = calculateMean(currentData);
+            std = calculateStd(currentData, mean);
+            
+            // 计算LACU边界
+            const boundaries = calculateLACUBoundaries(mean, std);
+            
+            // 更新计算结果
+            meanValue.textContent = formatNumber(mean);
+            stdValue.textContent = formatNumber(std);
+            
+            // 更新统计信息
+            totalCount.textContent = dataArray.length;
+            validCount.textContent = currentData.length;
+            
+            // 更新LACU区间范围显示
+            updateLACUDisplay(boundaries);
+            
+            // 确定每个数据点的LACU区间
+            const dataWithLACU = currentData.map(value => {
+                const lacu = determineLACU(value, mean, std);
+                return {
+                    value,
+                    lacu,
+                    color: getLACUColor(lacu)
+                };
+            });
+            
+            // 从高到低排序数据
+            dataWithLACU.sort((a, b) => b.value - a.value);
+            
+            // 准备图表数据
+            const labels = dataWithLACU.map((_, index) => `数据${index + 1}`);
+            const values = dataWithLACU.map(item => item.value);
+            const colors = dataWithLACU.map(item => item.color);
+            
+            // 获取图表需要绘制的线条
+            const chartLines = getChartLines(boundaries);
+            
+            // 绘制图表
+            drawChart(labels, values, colors, chartLines);
+            
+            // 显示结果卡片
+            resultsCard.style.display = 'block';
+            chartCard.style.display = 'block';
+        }
+        
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
-            // 设置示例数据
-            dataInput.value = sampleData.join(', ');
+            // 设置输入框为placeholder模式，但使用value以便用户可以立即输入
+            dataInput.value = "请输入样本数据，用逗号、空格或换行分隔。例如：4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18";
+            dataInput.classList.add('placeholder-text'); // 添加浅色文本样式
+            
+            // 添加焦点事件处理，实现placeholder效果但允许立即输入
+            dataInput.addEventListener('focus', function() {
+                if (this.value === "请输入样本数据，用逗号、空格或换行分隔。例如：4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18") {
+                    this.value = '';
+                    this.classList.remove('placeholder-text'); // 移除浅色文本样式
+                }
+            });
+            
+            // 添加失去焦点事件，如果为空则恢复提示
+            dataInput.addEventListener('blur', function() {
+                if (this.value.trim() === '') {
+                    this.value = "请输入样本数据，用逗号、空格或换行分隔。例如：4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18";
+                    this.classList.add('placeholder-text'); // 添加浅色文本样式
+                }
+            });
+            
+            // 添加input事件监听，确保如果输入框内容不是提示文本，则移除placeholder-text类
+            dataInput.addEventListener('input', function() {
+                // 如果当前是提示文本，在input事件中我们已经清空了，所以这里判断如果不是提示文本，就移除类
+                if (this.value !== "请输入样本数据，用逗号、空格或换行分隔。例如：4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18") {
+                    this.classList.remove('placeholder-text');
+                }
+            });
             
             // 初始化模式按钮和LACU定义显示
             updateModeButton(); // 新增：初始化模式按钮显示
@@ -622,10 +1809,12 @@
             calculateBtn.addEventListener('click', calculateAndPlot);
             sampleDataBtn.addEventListener('click', () => {
                 dataInput.value = sampleData.join(', ');
+                dataInput.classList.remove('placeholder-text'); // 移除浅色文本样式
                 calculateAndPlot();
             });
             clearDataBtn.addEventListener('click', () => {
-                dataInput.value = '';
+                dataInput.value = "请输入样本数据，用逗号、空格或换行分隔。例如：4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18";
+                dataInput.classList.add('placeholder-text'); // 添加浅色文本样式
             });
             
             // 模式切换监听
@@ -640,12 +1829,198 @@
                 }
             });
             
+            // 图表下载按钮监听 - 使用修复后的函数
+            downloadChartBtn.addEventListener('click', downloadChartImage);
+            
             // 自动调整输入框高度
             dataInput.addEventListener('input', autoResizeTextarea);
             
-            // 初始计算
-            setTimeout(calculateAndPlot, 500);
+            // 初始计算 - 使用示例数据但不显示在输入框
+            setTimeout(() => {
+                // 直接使用示例数据计算
+                calculateWithData(sampleData);
+            }, 500);
+            
+            // 设置面板相关事件监听
+            hamburgerMenuBtn.addEventListener('click', toggleSettingsPanel);
+            closeQrcodeModal.addEventListener('click', closeQrcodeModalFunc);
+            
+            // 点击右侧任意位置关闭设置面板
+            mainContent.addEventListener('click', (e) => {
+                if (isSettingsOpen && !e.target.closest('.settings-panel')) {
+                    toggleSettingsPanel();
+                }
+            });
+            
+            // 触摸事件监听
+            mainContent.addEventListener('touchstart', handleTouchStart);
+            mainContent.addEventListener('touchend', handleTouchEnd);
+            
+            // 点击弹窗外部关闭
+            window.addEventListener('click', (event) => {
+                if (event.target === qrcodeModal) {
+                    closeQrcodeModalFunc();
+                }
+            });
+            
+            // 设置项点击事件
+            updateHeader.addEventListener('click', () => {
+                toggleItem(updateHeader, updateContent);
+            });
+            
+            shareHeader.addEventListener('click', () => {
+                toggleItem(shareHeader, shareContent);
+            });
+            
+            aboutHeader.addEventListener('click', () => {
+                toggleItem(aboutHeader, aboutContent);
+            });
+            
+            // 默认不展开任何设置项
+            currentOpenItem = null;
+            
+            // 初始化分享设置项
+            initShareSection();
         });
+        
+        // 下载图表图片 - 修复版：App环境使用plus.gallery保存
+        function downloadChartImage() {
+            if (!bandwidthChart) {
+                alert('请先生成图表');
+                return;
+            }
+            
+            try {
+                // 获取图表Canvas元素
+                const canvas = document.getElementById('bandwidthChart');
+                
+                // 创建一个新的Canvas用于添加表头
+                const newCanvas = document.createElement('canvas');
+                const ctx = newCanvas.getContext('2d');
+                
+                // 动态计算字体大小，根据图表宽度调整
+                const chartWidth = canvas.width;
+                let titleFontSize, subtitleFontSize, paddingTop;
+                
+                if (chartWidth < 500) {
+                    // 小尺寸图表
+                    titleFontSize = 22;
+                    subtitleFontSize = 14;
+                    paddingTop = 70;
+                } else if (chartWidth < 800) {
+                    // 中等尺寸图表
+                    titleFontSize = 26;
+                    subtitleFontSize = 15;
+                    paddingTop = 75;
+                } else {
+                    // 大尺寸图表
+                    titleFontSize = 30;
+                    subtitleFontSize = 16;
+                    paddingTop = 80;
+                }
+                
+                // 设置新Canvas的尺寸（原Canvas宽度不变，高度增加用于表头）
+                newCanvas.width = canvas.width;
+                newCanvas.height = canvas.height + paddingTop;
+                
+                // 绘制背景色
+                ctx.fillStyle = '#1e2430';
+                ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+                
+                // 绘制表头
+                ctx.fillStyle = '#e0e6ef';
+                ctx.font = `bold ${titleFontSize}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('性能带宽分布图', newCanvas.width / 2, paddingTop / 2 - 10);
+                
+                // 绘制分隔线
+                ctx.beginPath();
+                ctx.moveTo(newCanvas.width * 0.2, paddingTop / 2 + 5); // 从20%宽度开始
+                ctx.lineTo(newCanvas.width * 0.8, paddingTop / 2 + 5); // 到80%宽度结束
+                ctx.strokeStyle = '#3a4255';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                
+                // 添加副标题（包含统计信息）
+                ctx.font = `bold ${subtitleFontSize}px Arial`;
+                ctx.fillStyle = '#a0a6b0';
+                ctx.fillText(
+                    `均值: ${meanValue.textContent} | 标准差: ${stdValue.textContent} | 模式: ${isMaxBetterMode ? '越大越好' : '越小越好'}`,
+                    newCanvas.width / 2,
+                    paddingTop / 2 + 25
+                );
+                
+                // 将原图表绘制到新Canvas上（向下偏移）
+                ctx.drawImage(canvas, 0, paddingTop);
+                
+                // 生成文件名，包含当前日期
+                const now = new Date();
+                const dateStr = now.toISOString().split('T')[0];
+                const timeStr = now.getHours().toString().padStart(2, '0') + 
+                               now.getMinutes().toString().padStart(2, '0');
+                const filename = `性能带宽分布图_${dateStr}_${timeStr}.png`;
+                const base64Data = newCanvas.toDataURL('image/png');
+
+                // 判断运行环境：如果是App环境 (window.plus存在)，则使用Native方法保存
+                if (window.plus) {
+                    saveImageToGallery(base64Data, filename);
+                } else {
+                    // 浏览器环境：创建临时链接下载
+                    const link = document.createElement('a');
+                    link.download = filename;
+                    link.href = base64Data;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    console.log('图表已下载:', filename);
+                }
+            } catch (error) {
+                console.error('下载图表时出错:', error);
+                alert('下载图表时出错，请重试');
+            }
+        }
+
+        // 新增：App端保存图片到相册的函数
+        function saveImageToGallery(base64Data, filename) {
+            // 创建原生 Bitmap 对象
+            var bitmap = new plus.nativeObj.Bitmap("chart_img");
+            
+            // 加载 Base64 数据
+            bitmap.loadBase64Data(base64Data, function() {
+                console.log("加载Base64图片数据成功");
+                
+                // 定义临时保存路径 (私有文档目录)
+                var url = "_doc/" + filename;
+                
+                // 保存到私有目录
+                bitmap.save(url, { overwrite: true, format: 'png' }, function(i) {
+                    console.log('保存图片到_doc成功：' + JSON.stringify(i));
+                    
+                    // 保存到系统相册
+                    plus.gallery.save(url, function(e) {
+                        // 成功回调
+                        plus.nativeUI.toast("图片已保存到系统相册", {duration: "long"});
+                        bitmap.clear(); // 销毁位图释放内存
+                    }, function(e) {
+                        // 失败回调
+                        plus.nativeUI.toast("保存到相册失败: " + JSON.stringify(e));
+                        console.log("保存到相册失败: " + JSON.stringify(e));
+                        bitmap.clear();
+                    });
+                    
+                }, function(e) {
+                    console.log('保存图片失败：' + JSON.stringify(e));
+                    plus.nativeUI.toast("保存图片失败");
+                    bitmap.clear();
+                });
+                
+            }, function(e) {
+                console.log('加载图片数据失败：' + JSON.stringify(e));
+                plus.nativeUI.toast("加载图片数据失败");
+                bitmap.clear();
+            });
+        }
         
         // 更新模式按钮
         function updateModeButton() {
@@ -703,8 +2078,13 @@
             textarea.style.height = newHeight + 'px';
         }
         
-        // 解析输入数据
+        // 解析输入数据 - 返回有效数字数组
         function parseInputData(input) {
+            // 检查是否是提示文本
+            if (input === "请输入样本数据，用逗号、空格或换行分隔。例如：4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18") {
+                return [];
+            }
+            
             const cleanedInput = input.replace(/，/g, ',').replace(/\s+/g, ',');
             const parts = cleanedInput.split(',');
             
@@ -713,6 +2093,30 @@
                 .filter(num => !isNaN(num) && isFinite(num));
                 
             return numbers;
+        }
+        
+        // 统计输入数据的总数（包括无效数据）
+        function countTotalData(input) {
+            // 检查是否是提示文本
+            if (input === "请输入样本数据，用逗号、空格或换行分隔。例如：4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18") {
+                return 0;
+            }
+            
+            if (!input.trim()) return 0;
+            
+            // 替换中文逗号为英文逗号
+            let cleanedInput = input.replace(/，/g, ',');
+            
+            // 将连续的空白字符（空格、换行、制表符等）替换为逗号
+            cleanedInput = cleanedInput.replace(/\s+/g, ',');
+            
+            // 按逗号分割
+            const parts = cleanedInput.split(',');
+            
+            // 过滤掉空字符串（由连续逗号产生）
+            const nonEmptyParts = parts.filter(part => part.trim() !== '');
+            
+            return nonEmptyParts.length;
         }
         
         // 计算均值
@@ -852,6 +2256,25 @@
             return str;
         }
         
+        // 优化后的Y轴步长计算函数，保持一致的刻度梯度
+        function calculateStepSize(range) {
+            // 标准刻度序列：0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10, 20, 50, 100, ...
+            const standardSteps = [0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10, 20, 50, 100];
+            
+            // 计算理想步长（范围除以8-12个刻度）
+            const idealStep = range / 10;
+            
+            // 找到最接近的标准步长
+            for (let i = 0; i < standardSteps.length; i++) {
+                if (standardSteps[i] >= idealStep) {
+                    return standardSteps[i];
+                }
+            }
+            
+            // 如果范围很大，使用更大的步长
+            return Math.ceil(range / 10);
+        }
+        
         // 计算并绘制图表
         function calculateAndPlot() {
             // 解析输入数据
@@ -884,7 +2307,10 @@
                     // 更新计算结果
                     meanValue.textContent = formatNumber(mean);
                     stdValue.textContent = formatNumber(std);
-                    totalCount.textContent = dataInput.value.split(',').length;
+                    
+                    // 修复：使用新的countTotalData函数统计总数
+                    const totalDataCount = countTotalData(dataInput.value);
+                    totalCount.textContent = totalDataCount;
                     validCount.textContent = currentData.length;
                     
                     // 更新LACU区间范围显示
@@ -951,28 +2377,55 @@
             
             // 根据数据范围确定padding比例
             let paddingRatio;
-            if (dataRange < 2) {
-                paddingRatio = 0.1;
+            if (dataRange < 0.5) {
+                paddingRatio = 0.2;  // 数据范围很小时，增加padding
+            } else if (dataRange < 2) {
+                paddingRatio = 0.15;
             } else if (dataRange < 5) {
+                paddingRatio = 0.1;
+            } else if (dataRange < 10) {
+                paddingRatio = 0.07;
+            } else if (dataRange < 20) {
                 paddingRatio = 0.05;
             } else {
-                paddingRatio = 0.02;
+                paddingRatio = 0.03;
             }
             
             // 计算Y轴范围
-            const chartMin = Math.max(0, Math.floor(absoluteMin - (dataRange * paddingRatio)));
-            const chartMax = Math.ceil(absoluteMax + (dataRange * paddingRatio));
-            const finalMin = chartMin;
-            let finalMax = chartMax;
-            
-            // 确保Y轴范围足够显示所有数据和边界线
-            if (finalMax - finalMin < 2) {
-                finalMax = finalMin + 2;
-            }
+            const chartMin = Math.max(0, absoluteMin - (dataRange * paddingRatio));
+            const chartMax = absoluteMax + (dataRange * paddingRatio);
             
             // 计算合适的步长
-            const range = finalMax - finalMin;
-            const stepSize = calculateStepSize(range);
+            const range = chartMax - chartMin;
+            let stepSize = calculateStepSize(range);
+            
+            // 确保Y轴范围是步长的整数倍
+            let finalMin = Math.floor(chartMin / stepSize) * stepSize;
+            let finalMax = Math.ceil(chartMax / stepSize) * stepSize;
+            
+            // 如果范围非常小，确保至少有2个刻度
+            if (finalMax - finalMin < stepSize) {
+                finalMin -= stepSize;
+                finalMax += stepSize;
+            }
+            
+            // 确保Y轴范围足够显示所有数据和边界线
+            const finalRange = finalMax - finalMin;
+            
+            // 如果数据范围非常小，确保Y轴至少有一定高度
+            if (finalRange < 0.1) {
+                const center = (finalMin + finalMax) / 2;
+                // 使用更小的步长
+                stepSize = 0.05;
+                finalMin = Math.floor(chartMin / stepSize) * stepSize;
+                finalMax = Math.ceil(chartMax / stepSize) * stepSize;
+                
+                // 确保至少有两个刻度
+                if (finalMax - finalMin < stepSize) {
+                    finalMin -= stepSize;
+                    finalMax += stepSize;
+                }
+            }
             
             // 创建新图表
             bandwidthChart = new Chart(ctx, {
@@ -1044,27 +2497,24 @@
                             },
                             grid: {
                                 drawBorder: false,
-                                color: '#2a3140'
+                                color: '#3a4255', // 修改：将网格线颜色调浅
+                                drawOnChartArea: true
                             },
                             beginAtZero: false,
                             min: finalMin,
                             max: finalMax,
                             ticks: {
                                 stepSize: stepSize,
+                                // 显示所有刻度值
                                 callback: function(value, index, values) {
-                                    if (Number.isInteger(value)) {
-                                        if (index === values.length - 1) {
-                                            return '';
-                                        }
-                                        return value;
-                                    }
-                                    return '';
+                                    // 确保刻度值显示格式一致
+                                    return formatNumber(value);
                                 },
                                 font: {
                                     size: 11
                                 },
                                 color: '#a0a6b0',
-                                maxTicksLimit: 8
+                                maxTicksLimit: 15  // 增加最大刻度限制
                             }
                         }
                     },
@@ -1162,7 +2612,6 @@
                         const meta = chart.getDatasetMeta(0);
                         
                         ctx.save();
-                        ctx.fillStyle = '#e0e6ef';
                         
                         // 根据屏幕宽度和设备类型动态调整字体大小
                         const isMobile = window.innerWidth < 768;
@@ -1224,6 +2673,9 @@
                                 }
                                 
                                 if (canDraw) {
+                                    // 修改：使用柱状图对应的颜色，而不是固定的#e0e6ef
+                                    ctx.fillStyle = colors[index];
+                                    
                                     // 绘制标签背景（可选，提高可读性）
                                     if (isMobile && fontSize < 9) {
                                         ctx.save();
@@ -1239,7 +2691,7 @@
                                         ctx.restore();
                                         
                                         // 恢复文本颜色
-                                        ctx.fillStyle = '#e0e6ef';
+                                        ctx.fillStyle = colors[index];
                                     }
                                     
                                     ctx.fillText(
@@ -1258,16 +2710,6 @@
                     }
                 }]
             });
-        }
-        
-        // 计算Y轴步长的辅助函数
-        function calculateStepSize(range) {
-            if (range <= 2) return 0.5;
-            if (range <= 5) return 1;
-            if (range <= 10) return 1;
-            if (range <= 20) return 2;
-            if (range <= 50) return 5;
-            return Math.ceil(range / 10);
         }
         
         // 监听窗口大小变化，重新绘制图表
