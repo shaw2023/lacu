@@ -21,9 +21,9 @@
 - **C**：竞争性能（橙色）
 - **U**：普通性能（红色）
 
-## 安装
-- 网页版：https://shaw2023.github.io/lacu/
-- 移动端：下载Releases  APK 安装
+## 🚀 在线体验
+- **网页版：** [👉 点击这里在线使用](https://shaw2023.github.io/lacu/)
+- **移动端：** [📥 下载 Android 安装包 (APK)](https://github.com/shaw2023/lacu/releases)
 
 ## 贡献
 欢迎提交 Issue 或 Pull Request！
