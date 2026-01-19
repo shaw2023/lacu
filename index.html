@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>性能带宽计算器</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/chart.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -13,9 +13,10 @@
             font-family: 'Helvetica Neue', Arial, sans-serif;
         }
         
+        /* --- 网页版亮色主题调整 --- */
         body {
-            background-color: #121826;
-            color: #e0e6ef;
+            background-color: #f5f7fa; /* 亮色背景 */
+            color: #333333; /*以此深色文字为主 */
             line-height: 1.6;
             padding: 10px;
             max-width: 100%;
@@ -23,16 +24,16 @@
             min-height: 100vh;
         }
         
-        /* 汉堡菜单按钮 - 显著加大 */
+        /* 汉堡菜单按钮 */
         .hamburger-menu-btn {
             position: absolute;
             top: 20px;
             left: 20px;
-            width: 50px; /* 显著加大：从40px增加到50px */
-            height: 50px; /* 显著加大：从40px增加到50px */
-            border-radius: 8px; /* 增加圆角 */
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
             background: none;
-            color: white;
+            color: #333; /* 亮色模式下改为深色 */
             border: none;
             cursor: pointer;
             display: flex;
@@ -43,29 +44,27 @@
         }
         
         .hamburger-menu-btn:hover {
-            background-color: rgba(106, 17, 203, 0.2); /* 加深hover效果 */
+            background-color: rgba(0, 0, 0, 0.05); /* 浅色 hover */
         }
         
-        /* 三横线图标 - 优化：加长、变细、间距缩小，增加透明度 */
         .hamburger-icon {
-            width: 50px; /* 显著加长：从45px增加到50px */
-            height: 24px; /* 减小高度：从30px减小到24px */
+            width: 50px;
+            height: 24px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* 改为space-between，使三条线间距均匀分布 */
+            justify-content: space-between;
             align-items: center;
         }
         
         .hamburger-icon span {
             display: block;
             width: 100%;
-            height: 3px; /* 变细：从4px减少到3px */
-            background-color: rgba(224, 230, 239, 0.7); /* 增加透明度：从完全不透明改为70%不透明 */
-            border-radius: 1.5px; /* 调整圆角 */
+            height: 3px;
+            background-color: #333; /* 深色线条 */
+            border-radius: 1.5px;
             transition: all 0.3s ease;
         }
         
-        /* 主内容区域 */
         .main-content {
             min-height: 100vh;
             overflow-y: auto;
@@ -74,7 +73,7 @@
         
         .main-content.settings-open {
             transform: translateX(50%);
-            filter: brightness(0.7);
+            filter: brightness(0.95); /* 网页版稍微变暗即可 */
             overflow: hidden !important;
             touch-action: none;
             height: 100vh;
@@ -82,20 +81,20 @@
             width: 100%;
         }
         
-        /* 设置面板 - 已移除右上角X按钮 */
+        /* 设置面板 - 亮色 */
         .settings-panel {
             position: fixed;
             top: 0;
             left: -50%;
             width: 50%;
             height: 100vh;
-            background: #1e2430;
-            border-right: 1px solid #2a3140;
+            background: #ffffff; /* 纯白背景 */
+            border-right: 1px solid #e0e0e0; /* 浅灰边框 */
             z-index: 99;
             overflow-y: auto;
             padding: 20px;
             transition: left 0.3s ease;
-            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.05);
         }
         
         .settings-panel.open {
@@ -107,16 +106,16 @@
             align-items: center;
             margin-bottom: 30px;
             padding-bottom: 15px;
-            border-bottom: 1px solid #2a3140;
+            border-bottom: 1px solid #f0f0f0;
         }
         
         .settings-title {
             font-size: 1.3rem;
-            color: #e0e6ef;
+            color: #333;
             margin-left: 10px;
+            font-weight: bold;
         }
         
-        /* 简洁的设置项样式 */
         .settings-item {
             margin-bottom: 20px;
             border-radius: 8px;
@@ -134,12 +133,12 @@
         }
         
         .item-header:hover {
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: #f9f9f9;
         }
         
         .item-header.active {
-            border-bottom: 1px solid #2a3140;
-            background-color: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid #f0f0f0;
+            background-color: #f5f5f5;
         }
         
         .item-content-wrapper {
@@ -159,41 +158,25 @@
             font-size: 1rem;
         }
         
-        .update-icon {
-            background: rgba(46, 204, 113, 0.1);
-            color: #2ecc71;
-        }
+        .update-icon { background: rgba(46, 204, 113, 0.1); color: #2ecc71; }
+        .share-icon { background: rgba(52, 152, 219, 0.1); color: #3498db; }
+        .about-icon { background: rgba(155, 89, 182, 0.1); color: #9b59b6; }
         
-        .share-icon {
-            background: rgba(52, 152, 219, 0.1);
-            color: #3498db;
-        }
-        
-        .about-icon {
-            background: rgba(155, 89, 182, 0.1);
-            color: #9b59b6;
-        }
-        
-        .item-text {
-            flex-grow: 1;
-        }
+        .item-text { flex-grow: 1; }
         
         .item-title {
             font-weight: 600;
             font-size: 0.95rem;
-            color: #e0e6ef;
+            color: #333;
         }
         
         .item-desc {
             font-size: 0.8rem;
-            color: #a0a6b0;
+            color: #666;
             margin-top: 3px;
         }
         
-        /* 移除三角标识，不显示任何箭头 */
-        .item-toggle {
-            display: none;
-        }
+        .item-toggle { display: none; }
         
         .item-content {
             max-height: 0;
@@ -211,53 +194,9 @@
             padding-top: 10px;
         }
         
-        /* 检测更新内容样式 */
-        .update-content {
-            text-align: center;
-            padding: 10px 0;
-        }
+        /* 检测更新相关样式已保留，但在HTML中隐藏了入口 */
         
-        .update-status {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
-            color: #e0e6ef;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-        
-        .check-update-btn {
-            background: linear-gradient(to right, #6a11cb, #2575fc);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 10px 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin: 0 auto;
-            height: 40px; /* 固定高度 */
-            min-width: 120px; /* 最小宽度 */
-            position: relative; /* 为旋转圆圈定位 */
-        }
-        
-        .check-update-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(106, 17, 203, 0.5);
-        }
-        
-        .check-update-btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-        
-        /* 分享选项样式 - 横排布局 */
+        /* 分享选项样式 - 亮色适配 */
         .share-options {
             display: flex;
             justify-content: space-between;
@@ -271,16 +210,17 @@
             flex-direction: column;
             align-items: center;
             padding: 15px;
-            background: #2a3140;
+            background: #f8f9fa; /* 浅灰底 */
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
             text-align: center;
             min-height: 120px;
+            border: 1px solid #eee;
         }
         
         .share-option:hover {
-            background: #3a4255;
+            background: #f0f0f0;
             transform: translateY(-2px);
         }
         
@@ -296,13 +236,13 @@
         .share-option-title {
             font-weight: 600;
             font-size: 0.9rem;
-            color: #e0e6ef;
+            color: #333;
             margin-bottom: 5px;
         }
         
         .share-option-desc {
             font-size: 0.8rem;
-            color: #a0a6b0;
+            color: #666;
         }
         
         .copy-success {
@@ -313,16 +253,15 @@
             text-align: center;
         }
         
-        /* 分享提示文字样式 - 修改：左侧对齐，添加句号 */
         .share-hint {
-            color: #e0e6ef;
+            color: #333;
             font-size: 0.9rem;
-            text-align: left; /* 修改：从center改为left */
+            text-align: left;
             margin-bottom: 15px;
             line-height: 1.5;
         }
         
-        /* 二维码弹窗样式 */
+        /* 二维码弹窗 - 亮色 */
         .qrcode-modal {
             display: none;
             position: fixed;
@@ -330,20 +269,20 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.5); /* 半透明遮罩变浅 */
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
         
         .qrcode-modal-content {
-            background: #1e2430;
+            background: #ffffff;
             border-radius: 15px;
             padding: 25px;
             width: 90%;
             max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border: 1px solid #2a3140;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid #eee;
             text-align: center;
         }
         
@@ -353,18 +292,18 @@
             align-items: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #2a3140;
+            border-bottom: 2px solid #f0f0f0;
         }
         
         .qrcode-modal-title {
             font-size: 1.3rem;
-            color: #e0e6ef;
+            color: #333;
         }
         
         .close-qrcode-modal {
             background: none;
             border: none;
-            color: #a0a6b0;
+            color: #999;
             font-size: 1.5rem;
             cursor: pointer;
             width: 30px;
@@ -377,13 +316,13 @@
         }
         
         .close-qrcode-modal:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #e0e6ef;
+            background-color: #f0f0f0;
+            color: #333;
         }
         
         .qrcode-placeholder {
             padding: 30px;
-            background: white;
+            background: #f9f9f9;
             border-radius: 10px;
             margin: 0 auto 20px;
             display: inline-block;
@@ -393,12 +332,13 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            border: 1px dashed #ccc;
         }
         
         .qrcode-placeholder-icon {
             font-size: 4rem;
             margin-bottom: 15px;
-            color: #333;
+            color: #ccc;
         }
         
         .qrcode-placeholder-text {
@@ -408,7 +348,7 @@
         }
         
         .qrcode-hint {
-            color: #a0a6b0;
+            color: #666;
             font-size: 0.9rem;
             margin-top: 15px;
         }
@@ -421,41 +361,21 @@
         .about-content p {
             margin-bottom: 12px;
             font-size: 0.9rem;
-            color: #e0e6ef;
+            color: #333;
         }
         
         .version-info {
-            background: #2a3140;
+            background: #f8f9fa;
             border-radius: 6px;
             padding: 12px;
             margin-top: 15px;
+            border: 1px solid #eee;
         }
         
         .version-info p {
             margin-bottom: 5px;
             font-size: 0.85rem;
-            color: #a0a6b0;
-        }
-        
-        .version {
-            color: #6a11cb;
-            font-weight: 600;
-        }
-        
-        /* 检测更新旋转圆圈 - 优化：与文字居中对齐 */
-        .spinner {
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            border-top: 2px solid #6a11cb;
-            width: 16px; /* 稍微增大，确保可见性 */
-            height: 16px; /* 稍微增大，确保可见性 */
-            animation: spin 1s linear infinite;
-            display: none;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            color: #666;
         }
         
         .container {
@@ -471,15 +391,11 @@
             color: white;
             border-radius: 15px;
             margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(37, 117, 252, 0.2); /* 调整阴影颜色 */
             position: relative;
-            /* 不添加左侧padding，保持原始布局 */
         }
         
-        h1 {
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-        }
+        h1 { font-size: 1.8rem; margin-bottom: 8px; }
         
         .subtitle {
             font-size: 0.95rem;
@@ -488,21 +404,22 @@
             margin: 0 auto;
         }
         
+        /* 卡片样式 - 亮色 */
         .card {
-            background: #1e2430;
+            background: #ffffff;
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-            border: 1px solid #2a3140;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* 柔和阴影 */
+            border: 1px solid #f0f0f0;
         }
         
         .card-title {
             font-size: 1.2rem;
-            color: #e0e6ef;
+            color: #333;
             margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 2px solid #2a3140;
+            border-bottom: 2px solid #f0f0f0;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -515,7 +432,7 @@
             align-items: center;
             white-space: nowrap;
             flex-grow: 1;
-            min-width: 0; /* 防止文本溢出 */
+            min-width: 0;
         }
         
         .card-title i {
@@ -523,7 +440,7 @@
             color: #6a11cb;
         }
         
-        /* 模式切换按钮样式 */
+        /* 模式切换按钮 */
         .mode-toggle-btn {
             min-width: 70px;
             height: 30px;
@@ -537,7 +454,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             padding: 0 8px;
             gap: 4px;
             white-space: nowrap;
@@ -546,26 +463,17 @@
         
         .mode-toggle-btn:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
         
-        .mode-toggle-btn:active {
-            transform: translateY(0);
-        }
+        .mode-toggle-btn.small-better { background: #e74c3c; } /* 纯色在浅色背景更清晰 */
+        .mode-toggle-btn.large-better { background: #2ecc71; }
         
-        .mode-toggle-btn.small-better {
-            background: rgba(231, 76, 60, 0.4); /* 红色加深 */
-        }
-        
-        .mode-toggle-btn.large-better {
-            background: rgba(46, 204, 113, 0.4); /* 绿色加深 */
-        }
-        
-        /* 图表下载按钮样式 - 使用第一个图标（简洁箭头） */
+        /* 图表下载按钮 - 亮色适配 */
         .download-chart-btn {
-            width: 30px; /* 与模式切换按钮高度一致 */
+            width: 30px;
             height: 30px;
-            border-radius: 6px; /* 与模式切换按钮一致 */
+            border-radius: 6px;
             border: none;
             background: none;
             cursor: pointer;
@@ -576,19 +484,14 @@
             padding: 0;
             flex-shrink: 0;
             position: relative;
-            margin-right: 0; /* 确保对齐 */
+            margin-right: 0;
         }
         
         .download-chart-btn:hover {
-            background-color: rgba(106, 17, 203, 0.1);
+            background-color: rgba(0, 0, 0, 0.05);
             transform: translateY(-1px);
         }
         
-        .download-chart-btn:active {
-            transform: translateY(0);
-        }
-        
-        /* 使用第一个图标：简洁箭头 */
         .download-icon {
             display: inline-block;
             width: 24px;
@@ -606,7 +509,7 @@
             height: 0;
             border-left: 7px solid transparent;
             border-right: 7px solid transparent;
-            border-top: 12px solid #e0e6ef;
+            border-top: 12px solid #333; /* 深色箭头 */
         }
         
         .download-icon::after {
@@ -617,47 +520,40 @@
             transform: translateX(-50%);
             width: 17px;
             height: 2px;
-            background-color: #e0e6ef;
+            background-color: #333; /* 深色横线 */
             border-radius: 1px;
         }
         
-        .download-chart-btn:hover .download-icon::before {
-            border-top-color: #6a11cb;
-        }
+        .download-chart-btn:hover .download-icon::before { border-top-color: #6a11cb; }
+        .download-chart-btn:hover .download-icon::after { background-color: #6a11cb; }
         
-        .download-chart-btn:hover .download-icon::after {
-            background-color: #6a11cb;
-        }
-        
-        /* 输入框样式 */
+        /* 输入框 - 亮色 */
         .input-section textarea {
             width: 100%;
             min-height: 100px;
             max-height: 300px;
             padding: 15px;
-            border: 2px solid #3a4255;
+            border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 1rem;
             resize: none;
             transition: all 0.3s;
-            background-color: #2a3140;
-            color: #e0e6ef; /* 正常文本颜色 */
+            background-color: #f9f9f9;
+            color: #333;
             overflow-y: auto;
         }
         
-        /* 提示文本样式 - 新增 */
-        .input-section textarea.placeholder-text {
-            color: #a0a6b0; /* 浅色提示文本，与.input-hint颜色一致 */
-        }
+        .input-section textarea.placeholder-text { color: #999; }
         
         .input-section textarea:focus {
             outline: none;
             border-color: #6a11cb;
+            background-color: #fff;
         }
         
         .input-hint {
             font-size: 0.85rem;
-            color: #a0a6b0;
+            color: #666;
             margin-top: 8px;
             margin-bottom: 15px;
         }
@@ -686,16 +582,16 @@
         
         .btn-primary:hover, .btn-primary:active {
             transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(106, 17, 203, 0.5);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
         }
         
         .btn-secondary {
-            background: #3a4255;
-            color: #e0e6ef;
+            background: #e0e0e0;
+            color: #333;
         }
         
         .btn-secondary:hover, .btn-secondary:active {
-            background: #4a5265;
+            background: #d0d0d0;
         }
         
         .btn-danger {
@@ -709,10 +605,8 @@
             box-shadow: 0 5px 10px rgba(255, 71, 87, 0.3);
         }
         
-        /* LACU区间方块布局 */
-        .lacu-container {
-            margin-top: 5px;
-        }
+        /* LACU区间方块 */
+        .lacu-container { margin-top: 5px; }
         
         .lacu-grid {
             display: grid;
@@ -741,39 +635,33 @@
             font-size: 1.1rem;
             line-height: 1.4;
             font-weight: 700;
+            color: #333; /* 深色文字 */
         }
         
-        .L-box { 
-            background-color: rgba(231, 76, 60, 0.15); 
-            border: 2px solid rgba(231, 76, 60, 0.4);
-        }
-        .A-box { 
-            background-color: rgba(243, 156, 18, 0.15); 
-            border: 2px solid rgba(243, 156, 18, 0.4);
-        }
-        .C-box { 
-            background-color: rgba(46, 204, 113, 0.15); 
-            border: 2px solid rgba(46, 204, 113, 0.4);
-        }
-        .U-box { 
-            background-color: rgba(52, 152, 219, 0.15); 
-            border: 2px solid rgba(52, 152, 219, 0.4);
-        }
+        /* 更新后的配色：反转色谱
+           L: Blue (#3498db)
+           A: Green (#2ecc71)
+           C: Orange (#f39c12)
+           U: Red (#e74c3c)
+        */
+        .L-box { background-color: rgba(52, 152, 219, 0.1); border: 1px solid rgba(52, 152, 219, 0.3); }
+        .A-box { background-color: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.3); }
+        .C-box { background-color: rgba(243, 156, 18, 0.1); border: 1px solid rgba(243, 156, 18, 0.3); }
+        .U-box { background-color: rgba(231, 76, 60, 0.1); border: 1px solid rgba(231, 76, 60, 0.3); }
         
-        .L-label { color: #e74c3c; }
-        .A-label { color: #f39c12; }
-        .C-label { color: #2ecc71; }
-        .U-label { color: #3498db; }
+        .L-label { color: #3498db; }
+        .A-label { color: #2ecc71; }
+        .C-label { color: #f39c12; }
+        .U-label { color: #e74c3c; }
         
-        /* 统计摘要 */
         .stats-summary {
             display: flex;
             justify-content: space-between;
             margin-top: 15px;
             padding: 12px 0;
-            border-top: 1px solid #2a3140;
+            border-top: 1px solid #f0f0f0;
             font-size: 0.95rem;
-            color: #e0e6ef;
+            color: #333;
         }
         
         .chart-container {
@@ -785,20 +673,19 @@
         
         .note {
             font-size: 0.85rem;
-            color: #a0a6b0;
+            color: #666;
             margin-top: 20px;
             padding: 15px;
-            background: #2a3140;
+            background: #f9f9f9;
             border-radius: 10px;
             border-left: 4px solid #6a11cb;
         }
         
-        /* 修复：移除chart-section的特殊样式，使用通用样式 */
         .results-section .card-title,
         .lacu-definition-section .card-title {
             display: block;
             padding-bottom: 10px;
-            border-bottom: 2px solid #2a3140;
+            border-bottom: 2px solid #f0f0f0;
         }
         
         .results-section .card-title-text,
@@ -807,14 +694,12 @@
             align-items: center;
         }
         
-        /* 特别为chart-section保持flex布局 */
         .chart-section .card-title {
-            /* 保持flex布局，不要覆盖为block */
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding-bottom: 10px;
-            border-bottom: 2px solid #2a3140;
+            border-bottom: 2px solid #f0f0f0;
         }
         
         .chart-section .card-title-text {
@@ -822,381 +707,42 @@
             align-items: center;
         }
         
-        /* 当前模式提示样式 - 颜色改为白色 */
         .current-mode-hint {
             font-size: 0.9rem;
-            color: #ffffff; /* 改为白色 */
+            color: #333;
             font-weight: 600;
             margin-bottom: 10px;
             padding-bottom: 8px;
-            border-bottom: 1px solid #3a4255;
+            border-bottom: 1px solid #e0e0e0;
         }
         
-        /* 页脚样式 */
         .footer {
             text-align: center;
-            color: #a0a6b0;
+            color: #999;
             padding: 20px 0;
             font-size: 0.85rem;
             margin-top: 20px;
-            border-top: 1px solid #2a3140;
+            border-top: 1px solid #eee;
         }
         
-        /* 响应式设计 */
+        /* 响应式调整保持不变，仅颜色适配 */
         @media (max-width: 768px) {
-            .lacu-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
-            }
-            
-            .lacu-box {
-                padding: 18px 8px;
-                min-height: 90px;
-            }
-            
-            .lacu-label {
-                font-size: 1.6rem;
-                margin-bottom: 8px;
-            }
-            
-            .lacu-range {
-                font-size: 1rem;
-                font-weight: 700;
-            }
-            
-            .chart-container {
-                height: 320px;
-            }
-            
-            h1 {
-                font-size: 1.5rem;
-            }
-            
-            .card-title {
-                font-size: 1.1rem;
-            }
-            
-            .mode-toggle-btn {
-                min-width: 65px;
-                height: 28px;
-                font-size: 0.8rem;
-                padding: 0 6px;
-            }
-            
-            /* 确保在手机端标题文本不会过长 */
-            .card-title-text {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                max-width: calc(100% - 50px); /* 为按钮留出空间 */
-            }
-            
-            .download-chart-btn {
-                width: 28px;
-                height: 28px;
-            }
-            
-            .download-icon {
-                width: 22px;
-                height: 22px;
-            }
-            
-            .download-icon::before {
-                border-left: 6px solid transparent;
-                border-right: 6px solid transparent;
-                border-top: 10px solid #e0e6ef;
-            }
-            
-            .download-icon::after {
-                width: 15px;
-                height: 2px;
-            }
-            
-            .footer {
-                font-size: 0.8rem;
-                padding: 15px 0;
-            }
-            
-            /* 手机端设置面板宽度 */
-            .settings-panel {
-                width: 85%;
-                left: -85%;
-            }
-            
-            .main-content.settings-open {
-                transform: translateX(85%);
-            }
-            
-            /* 手机端三横线也优化 */
-            .hamburger-menu-btn {
-                top: 18px;
-                left: 18px;
-                width: 46px; /* 手机端也加大 */
-                height: 46px; /* 手机端也加大 */
-            }
-            
-            .hamburger-icon {
-                width: 40px; /* 手机端也加长 */
-                height: 20px; /* 手机端减小高度 */
-            }
-            
-            .hamburger-icon span {
-                height: 3px; /* 保持加粗 */
-                background-color: rgba(224, 230, 239, 0.7); /* 保持透明度 */
-            }
-            
-            /* 手机端分享选项保持横排 */
-            .share-options {
-                flex-direction: row;
-                gap: 10px;
-            }
-            
-            .share-option {
-                padding: 12px;
-                min-height: 110px;
-            }
-            
-            .share-option-icon {
-                font-size: 1.8rem;
-                height: 35px;
-            }
-            
-            .share-option-title {
-                font-size: 0.85rem;
-            }
-            
-            .share-option-desc {
-                font-size: 0.75rem;
-            }
+            .lacu-grid { grid-template-columns: repeat(2, 1fr); }
+            .settings-panel { width: 85%; left: -85%; }
+            .main-content.settings-open { transform: translateX(85%); }
+            .share-options { flex-direction: row; }
         }
         
         @media (max-width: 480px) {
-            /* 手机端按钮保持横向排列 */
-            .btn-group-3 {
-                grid-template-columns: 1fr 1fr 1fr; /* 保持三列布局 */
-                gap: 8px;
-            }
-            
-            .btn-group-3 button {
-                font-size: 0.85rem;
-                padding: 12px 6px;
-            }
-            
-            .btn-group-3 button span.long-text {
-                display: none;
-            }
-            
-            .btn-group-3 button span.short-text {
-                display: inline;
-            }
-            
-            .lacu-grid {
-                gap: 8px;
-            }
-            
-            .lacu-box {
-                padding: 15px 5px;
-                min-height: 85px;
-            }
-            
-            .lacu-label {
-                font-size: 1.5rem;
-            }
-            
-            .lacu-range {
-                font-size: 0.95rem;
-                font-weight: 700;
-            }
-            
-            .chart-container {
-                height: 300px;
-            }
-            
-            .card-title {
-                font-size: 1rem;
-                gap: 8px;
-            }
-            
-            .mode-toggle-btn {
-                min-width: 60px;
-                height: 26px;
-                font-size: 0.75rem;
-                padding: 0 5px;
-            }
-            
-            .download-chart-btn {
-                width: 26px;
-                height: 26px;
-            }
-            
-            .download-icon {
-                width: 20px;
-                height: 20px;
-            }
-            
-            .download-icon::before {
-                border-left: 5px solid transparent;
-                border-right: 5px solid transparent;
-                border-top: 9px solid #e0e6ef;
-            }
-            
-            .download-icon::after {
-                width: 13px;
-                height: 2px;
-            }
-            
-            /* 在超小屏幕上进一步调整标题文本 */
-            .card-title-text {
-                max-width: calc(100% - 40px);
-            }
-            
-            /* 超小屏幕设置面板宽度 */
-            .settings-panel {
-                width: 85%;
-                left: -85%;
-            }
-            
-            .main-content.settings-open {
-                transform: translateX(85%);
-            }
-            
-            /* 超小屏幕三横线也优化 */
-            .hamburger-menu-btn {
-                top: 15px;
-                left: 15px;
-                width: 44px; /* 超小屏幕也加大 */
-                height: 44px; /* 超小屏幕也加大 */
-            }
-            
-            .hamburger-icon {
-                width: 38px; /* 超小屏幕也加长 */
-                height: 18px; /* 超小屏幕减小高度 */
-            }
-            
-            .hamburger-icon span {
-                height: 2.5px; /* 进一步变细 */
-                background-color: rgba(224, 230, 239, 0.7); /* 保持透明度 */
-            }
-            
-            .settings-header {
-                margin-bottom: 20px;
-            }
-            
-            .settings-title {
-                font-size: 1.2rem;
-            }
-            
-            .item-header {
-                padding: 12px;
-            }
-            
-            .content-inner {
-                padding: 12px;
-                padding-top: 8px;
-            }
-            
-            h1 {
-                font-size: 1.5rem;
-            }
-            
-            /* 超小屏幕分享选项调整 */
-            .share-options {
-                gap: 8px;
-            }
-            
-            .share-option {
-                padding: 10px 8px;
-                min-height: 100px;
-            }
-            
-            .share-option-icon {
-                font-size: 1.6rem;
-                height: 30px;
-                margin-bottom: 8px;
-            }
-            
-            .share-option-title {
-                font-size: 0.8rem;
-            }
-            
-            .share-option-desc {
-                font-size: 0.7rem;
-            }
-            
-            .qrcode-placeholder {
-                width: 180px;
-                height: 180px;
-                padding: 20px;
-            }
-            
-            .qrcode-placeholder-icon {
-                font-size: 3rem;
-            }
-        }
-        
-        @media (max-width: 360px) {
-            .card-title {
-                font-size: 0.95rem;
-            }
-            
-            .mode-toggle-btn {
-                min-width: 55px;
-                font-size: 0.7rem;
-            }
-            
-            .download-chart-btn {
-                width: 24px;
-                height: 24px;
-            }
-            
-            .download-icon {
-                width: 18px;
-                height: 18px;
-            }
-            
-            .download-icon::before {
-                border-left: 4px solid transparent;
-                border-right: 4px solid transparent;
-                border-top: 8px solid #e0e6ef;
-            }
-            
-            .download-icon::after {
-                width: 12px;
-                height: 1.5px;
-            }
-            
-            .footer {
-                font-size: 0.75rem;
-                padding: 10px 0;
-            }
-            
-            /* 超小屏幕按钮调整 */
-            .btn-group-3 button {
-                font-size: 0.8rem;
-                padding: 10px 4px;
-            }
-            
-            /* 超小屏幕三横线保持优化 */
-            .hamburger-menu-btn {
-                width: 42px; /* 超小屏幕保持加大 */
-                height: 42px; /* 超小屏幕保持加大 */
-            }
-            
-            .hamburger-icon {
-                width: 36px; /* 超小屏幕保持加长 */
-                height: 16px; /* 超小屏幕减小高度 */
-            }
-            
-            .hamburger-icon span {
-                height: 2px; /* 超小屏幕进一步变细 */
-                background-color: rgba(224, 230, 239, 0.7); /* 保持透明度 */
-            }
+            .btn-group-3 button span.long-text { display: none; }
+            .btn-group-3 button span.short-text { display: inline; }
+            .lacu-label { font-size: 1.5rem; }
+            .settings-panel { width: 85%; left: -85%; }
+            .main-content.settings-open { transform: translateX(85%); }
         }
         
         @media (min-width: 481px) {
-            .btn-group-3 button span.short-text {
-                display: none;
-            }
+            .btn-group-3 button span.short-text { display: none; }
         }
         
         .loading {
@@ -1207,7 +753,7 @@
         }
         
         .loading-spinner {
-            border: 4px solid rgba(255, 255, 255, 0.1);
+            border: 4px solid rgba(106, 17, 203, 0.1);
             border-radius: 50%;
             border-top: 4px solid #6a11cb;
             width: 40px;
@@ -1222,6 +768,39 @@
         }
     </style>
 </head>
+
+<script>
+    document.addEventListener('plusready', function(){
+        // 百度统计逻辑保留
+        var SITE_ID = "3581fd9895ba2af8f7c20c3be12f24b4"; 
+        var BASE_URL = "https://samaritan.dpdns.org/index";
+        var storageKey = "baidutongji_uuid"; 
+        var visitorId = localStorage.getItem(storageKey);
+        var isNewVisitor = "0"; 
+        if (!visitorId) {
+            visitorId = "u_" + makeShortId(6);
+            localStorage.setItem(storageKey, visitorId);
+            isNewVisitor = "1"; 
+        }
+        var deviceModel = plus.device.model;
+        var fullUrl = BASE_URL + "?uid=" + visitorId + "&m=" + encodeURIComponent(deviceModel);
+        var encodedUrl = encodeURIComponent(fullUrl);
+        var rnd = Math.ceil(Math.random() * 1000000000);
+        var baiduApi = "https://hm.baidu.com/hm.gif?si=" + SITE_ID + "&et=0&nv=" + isNewVisitor + "&u=" + encodedUrl + "&rnd=" + rnd;
+        var img = new Image();
+        img.src = baiduApi;
+        function makeShortId(length) {
+            var result = '';
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for ( var i = 0; i < length; i++ ) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+    });
+</script>
+
 <body>
     <button class="hamburger-menu-btn" id="hamburgerMenuBtn">
         <div class="hamburger-icon">
@@ -1345,7 +924,7 @@
             </main>
             
             <footer class="footer">
-                性能带宽计算器 © 2025 | 横屏显示效果更佳
+                性能带宽计算器 @By XHY 
             </footer>
         </div>
     </div>
@@ -1357,7 +936,7 @@
             </div>
         </div>
         
-        <div class="settings-item" id="updateItem">
+        <div class="settings-item" id="updateItem" style="display: none !important;">
             <div class="item-header" id="updateHeader">
                 <div class="item-content-wrapper">
                     <div class="item-icon update-icon">
@@ -1392,7 +971,7 @@
                     </div>
                     <div class="item-text">
                         <div class="item-title">分享应用</div>
-                        <div class="item-desc">分享下载链接给好友</div>
+                        <div class="item-desc">分享链接给好友</div>
                     </div>
                 </div>
             </div>
@@ -1420,8 +999,7 @@
                         <p>性能带宽计算器是一款专业的统计分析工具，适用于性能分析、质量管控、数据评估等多种场景，帮助用户快速了解数据分布特征。</p>
                         
                         <div class="version-info">
-                            <p>当前版本：<span class="version">v1.0.0</span></p>
-                            <p>更新日期：2025年12月</p> <p>开发者：性能带宽计算器团队</p>
+						<p>更新日期：2026年01月</p> <p>开发者：XHY</p>
                         </div>
                     </div>
                 </div>
@@ -1444,27 +1022,25 @@
     </div>
 
     <script>
-        // 全局变量
+        // JS 逻辑保持不变，确保功能正常
         let bandwidthChart = null;
         let currentData = [];
         let mean = 0;
         let std = 0;
-        let isMaxBetterMode = false; // false: 越小越好, true: 越大越好
+        let isMaxBetterMode = false;
         
-        // DOM元素
         const dataInput = document.getElementById('dataInput');
         const calculateBtn = document.getElementById('calculateBtn');
         const sampleDataBtn = document.getElementById('sampleDataBtn');
         const clearDataBtn = document.getElementById('clearDataBtn');
         const modeToggleBtn = document.getElementById('modeToggleBtn');
-        const downloadChartBtn = document.getElementById('downloadChartBtn'); // 新增
+        const downloadChartBtn = document.getElementById('downloadChartBtn');
         const loadingIndicator = document.getElementById('loadingIndicator');
         const resultsCard = document.getElementById('resultsCard');
         const chartCard = document.getElementById('chartCard');
         const chartDescription = document.getElementById('chartDescription');
         const lacuDefinition = document.getElementById('lacuDefinition');
         
-        // 结果元素
         const meanValue = document.getElementById('meanValue');
         const stdValue = document.getElementById('stdValue');
         const lRangeDisplay = document.getElementById('lRangeDisplay');
@@ -1474,15 +1050,12 @@
         const totalCount = document.getElementById('totalCount');
         const validCount = document.getElementById('validCount');
         
-        // 示例数据 - 修改为：4.4,3.75,6.23,4.65,4.35,6.84,5.5,4.81,4.95,5.18
         const sampleData = [4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18];
         
-        // 设置面板相关元素
         const mainContent = document.getElementById('mainContent');
         const hamburgerMenuBtn = document.getElementById('hamburgerMenuBtn');
         const settingsPanel = document.getElementById('settingsPanel');
         
-        // 设置项元素
         const updateItem = document.getElementById('updateItem');
         const shareItem = document.getElementById('shareItem');
         const aboutItem = document.getElementById('aboutItem');
@@ -1495,17 +1068,14 @@
         const shareContent = document.getElementById('shareContent');
         const aboutContent = document.getElementById('aboutContent');
         
-        // 检测更新相关元素
         const checkUpdateBtn = document.getElementById('checkUpdateBtn');
         const updateStatus = document.getElementById('updateStatus');
         const updateSpinner = document.getElementById('updateSpinner');
         const updateBtnText = document.getElementById('updateBtnText');
         
-        // 二维码弹窗元素
         const qrcodeModal = document.getElementById('qrcodeModal');
         const closeQrcodeModal = document.getElementById('closeQrcodeModal');
         
-        // 控制设置面板显示/隐藏
         let isSettingsOpen = false;
         let currentOpenItem = null;
         let touchStartX = 0;
@@ -1513,10 +1083,8 @@
         let touchEndX = 0;
         let touchEndY = 0;
         
-        // 分享内容
-        const shareText = "https://github.com/shaw2023/lacu/releases/download/v1.0.0/app-release.apk";
+        const shareText = "https://samaritan.dpdns.org/";
         
-        // 创建分享选项内容
         function createShareOptions() {
             const shareInnerHTML = `
                 <div class="share-content">
@@ -1525,8 +1093,8 @@
                         <div class="share-option" id="copyLinkOption">
                             <div class="share-option-icon">🔗</div>
                             <div class="share-option-text">
-                                <div class="share-option-title">复制链接</div>
-                                <div class="share-option-desc">复制下载链接</div>
+                                <div class="share-option-title">链接分享</div>
+                                <div class="share-option-desc">复制应用链接</div>
                             </div>
                         </div>
                         
@@ -1534,7 +1102,7 @@
                             <div class="share-option-icon">📱</div>
                             <div class="share-option-text">
                                 <div class="share-option-title">二维码分享</div>
-                                <div class="share-option-desc">生成二维码供好友扫描</div>
+                                <div class="share-option-desc">生成二维码</div>
                             </div>
                         </div>
                     </div>
@@ -1546,34 +1114,27 @@
             return shareInnerHTML;
         }
         
-        // 初始化分享设置项
         function initShareSection() {
             const contentInner = shareContent.querySelector('.content-inner');
             contentInner.innerHTML = createShareOptions();
             
-            // 获取新创建的元素
             const copyLinkOption = document.getElementById('copyLinkOption');
             const qrcodeShareOption = document.getElementById('qrcodeShareOption');
             const copySuccess = document.getElementById('copySuccess');
             
-            // 复制链接功能
             copyLinkOption.addEventListener('click', () => {
                 copyToClipboard(shareText);
                 copySuccess.style.display = 'block';
-                
-                // 3秒后隐藏成功提示
                 setTimeout(() => {
                     copySuccess.style.display = 'none';
                 }, 3000);
             });
             
-            // 二维码分享功能
             qrcodeShareOption.addEventListener('click', () => {
                 openQrcodeModal();
             });
         }
         
-        // 切换设置面板
         function toggleSettingsPanel() {
             isSettingsOpen = !isSettingsOpen;
             
@@ -1581,46 +1142,31 @@
                 settingsPanel.classList.add('open');
                 mainContent.classList.add('settings-open');
                 hamburgerMenuBtn.style.display = 'none';
-                
-                // 禁用主内容区域滚动
                 document.body.style.overflow = 'hidden';
             } else {
                 settingsPanel.classList.remove('open');
                 mainContent.classList.remove('settings-open');
                 hamburgerMenuBtn.style.display = 'flex';
-                
-                // 启用主内容区域滚动
                 document.body.style.overflow = 'auto';
             }
         }
         
-        // 切换设置项展开/收起
         function toggleItem(header, content) {
             const isActive = header.classList.contains('active');
-            
-            // 如果当前有展开的项目，先收起它
             if (currentOpenItem && currentOpenItem !== header) {
                 const currentContent = currentOpenItem.nextElementSibling;
-                
                 currentOpenItem.classList.remove('active');
                 currentContent.classList.remove('active');
             }
-            
-            // 切换当前项目的状态
             if (isActive) {
-                // 如果是当前项目且已展开，则收起
                 header.classList.remove('active');
                 content.classList.remove('active');
                 currentOpenItem = null;
             } else {
-                // 如果未展开，则展开
                 header.classList.add('active');
                 content.classList.add('active');
                 currentOpenItem = header;
-                
-                // 如果是分享设置项，初始化分享内容
                 if (header === shareHeader) {
-                    // 确保分享内容已初始化
                     if (!shareContent.querySelector('.share-options')) {
                         initShareSection();
                     }
@@ -1628,17 +1174,14 @@
             }
         }
         
-        // 打开二维码弹窗
         function openQrcodeModal() {
             qrcodeModal.style.display = 'flex';
         }
         
-        // 关闭二维码弹窗
         function closeQrcodeModalFunc() {
             qrcodeModal.style.display = 'none';
         }
         
-        // 复制到剪贴板
         function copyToClipboard(text) {
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(text)
@@ -1654,7 +1197,6 @@
             }
         }
         
-        // 降级复制方法
         function fallbackCopyText(text) {
             const textArea = document.createElement('textarea');
             textArea.value = text;
@@ -1677,72 +1219,33 @@
             document.body.removeChild(textArea);
         }
         
-        // 检查更新功能
-        checkUpdateBtn.addEventListener('click', () => {
-            // 显示加载状态
-            updateSpinner.style.display = 'inline-block';
-            updateBtnText.textContent = '检查中...';
-            checkUpdateBtn.disabled = true;
-            
-            // 模拟网络请求延迟
-            setTimeout(() => {
-                // 更新状态显示 - 简化版，不显示额外信息
-                updateStatus.innerHTML = '<span style="color: #2ecc71; font-weight: bold;">当前已是最新版本</span>';
-                
-                // 恢复按钮状态
-                updateSpinner.style.display = 'none';
-                updateBtnText.textContent = '检查更新';
-                checkUpdateBtn.disabled = false;
-            }, 1500);
-        });
-        
-        // 触摸事件处理 - 用于左滑关闭
         function handleTouchStart(e) {
             if (!isSettingsOpen) return;
-            
             touchStartX = e.changedTouches[0].screenX;
             touchStartY = e.changedTouches[0].screenY;
         }
         
         function handleTouchEnd(e) {
             if (!isSettingsOpen) return;
-            
             touchEndX = e.changedTouches[0].screenX;
             touchEndY = e.changedTouches[0].screenY;
-            
-            // 计算滑动距离
             const deltaX = touchEndX - touchStartX;
             const deltaY = touchEndY - touchStartY;
-            
-            // 如果主要是水平滑动且向左滑动距离大于50px，则关闭设置面板
             if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX < -50) {
                 toggleSettingsPanel();
             }
         }
         
-        // 使用指定数据计算（不依赖输入框）
         function calculateWithData(dataArray) {
             currentData = [...dataArray];
-            
-            // 计算统计值
             mean = calculateMean(currentData);
             std = calculateStd(currentData, mean);
-            
-            // 计算LACU边界
             const boundaries = calculateLACUBoundaries(mean, std);
-            
-            // 更新计算结果
             meanValue.textContent = formatNumber(mean);
             stdValue.textContent = formatNumber(std);
-            
-            // 更新统计信息
             totalCount.textContent = dataArray.length;
             validCount.textContent = currentData.length;
-            
-            // 更新LACU区间范围显示
             updateLACUDisplay(boundaries);
-            
-            // 确定每个数据点的LACU区间
             const dataWithLACU = currentData.map(value => {
                 const lacu = determineLACU(value, mean, std);
                 return {
@@ -1751,119 +1254,88 @@
                     color: getLACUColor(lacu)
                 };
             });
-            
-            // 从高到低排序数据
             dataWithLACU.sort((a, b) => b.value - a.value);
-            
-            // 准备图表数据
             const labels = dataWithLACU.map((_, index) => `数据${index + 1}`);
             const values = dataWithLACU.map(item => item.value);
             const colors = dataWithLACU.map(item => item.color);
-            
-            // 获取图表需要绘制的线条
             const chartLines = getChartLines(boundaries);
-            
-            // 绘制图表
             drawChart(labels, values, colors, chartLines);
-            
-            // 显示结果卡片
             resultsCard.style.display = 'block';
             chartCard.style.display = 'block';
         }
         
-        // 初始化
         document.addEventListener('DOMContentLoaded', function() {
-            // 设置输入框为placeholder模式，但使用value以便用户可以立即输入
             dataInput.value = "请输入样本数据，用逗号、空格或换行分隔。例如：4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18";
-            dataInput.classList.add('placeholder-text'); // 添加浅色文本样式
+            dataInput.classList.add('placeholder-text');
             
-            // 添加焦点事件处理，实现placeholder效果但允许立即输入
             dataInput.addEventListener('focus', function() {
                 if (this.value === "请输入样本数据，用逗号、空格或换行分隔。例如：4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18") {
                     this.value = '';
-                    this.classList.remove('placeholder-text'); // 移除浅色文本样式
+                    this.classList.remove('placeholder-text');
                 }
             });
             
-            // 添加失去焦点事件，如果为空则恢复提示
             dataInput.addEventListener('blur', function() {
                 if (this.value.trim() === '') {
                     this.value = "请输入样本数据，用逗号、空格或换行分隔。例如：4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18";
-                    this.classList.add('placeholder-text'); // 添加浅色文本样式
+                    this.classList.add('placeholder-text');
                 }
             });
             
-            // 添加input事件监听，确保如果输入框内容不是提示文本，则移除placeholder-text类
             dataInput.addEventListener('input', function() {
-                // 如果当前是提示文本，在input事件中我们已经清空了，所以这里判断如果不是提示文本，就移除类
                 if (this.value !== "请输入样本数据，用逗号、空格或换行分隔。例如：4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18") {
                     this.classList.remove('placeholder-text');
                 }
             });
             
-            // 初始化模式按钮和LACU定义显示
-            updateModeButton(); // 新增：初始化模式按钮显示
-            updateLACUDefinition(); // 新增：初始化LACU定义显示
+            updateModeButton();
+            updateLACUDefinition();
             
-            // 事件监听
             calculateBtn.addEventListener('click', calculateAndPlot);
             sampleDataBtn.addEventListener('click', () => {
                 dataInput.value = sampleData.join(', ');
-                dataInput.classList.remove('placeholder-text'); // 移除浅色文本样式
+                dataInput.classList.remove('placeholder-text');
                 calculateAndPlot();
             });
             clearDataBtn.addEventListener('click', () => {
                 dataInput.value = "请输入样本数据，用逗号、空格或换行分隔。例如：4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18";
-                dataInput.classList.add('placeholder-text'); // 添加浅色文本样式
+                dataInput.classList.add('placeholder-text');
             });
             
-            // 模式切换监听
             modeToggleBtn.addEventListener('click', function() {
                 isMaxBetterMode = !isMaxBetterMode;
                 updateModeButton();
                 updateLACUDefinition();
-                
-                // 如果有当前数据，重新计算
                 if (currentData.length > 0) {
                     calculateAndPlot();
                 }
             });
             
-            // 图表下载按钮监听 - 使用修复后的函数
             downloadChartBtn.addEventListener('click', downloadChartImage);
-            
-            // 自动调整输入框高度
             dataInput.addEventListener('input', autoResizeTextarea);
             
-            // 初始计算 - 使用示例数据但不显示在输入框
             setTimeout(() => {
-                // 直接使用示例数据计算
                 calculateWithData(sampleData);
             }, 500);
             
-            // 设置面板相关事件监听
             hamburgerMenuBtn.addEventListener('click', toggleSettingsPanel);
             closeQrcodeModal.addEventListener('click', closeQrcodeModalFunc);
             
-            // 点击右侧任意位置关闭设置面板
             mainContent.addEventListener('click', (e) => {
                 if (isSettingsOpen && !e.target.closest('.settings-panel')) {
                     toggleSettingsPanel();
                 }
             });
             
-            // 触摸事件监听
             mainContent.addEventListener('touchstart', handleTouchStart);
             mainContent.addEventListener('touchend', handleTouchEnd);
             
-            // 点击弹窗外部关闭
             window.addEventListener('click', (event) => {
                 if (event.target === qrcodeModal) {
                     closeQrcodeModalFunc();
                 }
             });
             
-            // 设置项点击事件
             updateHeader.addEventListener('click', () => {
                 toggleItem(updateHeader, updateContent);
             });
@@ -1876,85 +1348,93 @@
                 toggleItem(aboutHeader, aboutContent);
             });
             
-            // 默认不展开任何设置项
             currentOpenItem = null;
-            
-            // 初始化分享设置项
             initShareSection();
+	
+            document.addEventListener('plusready', function() {
+                var firstBackTime = 0;
+                plus.key.addEventListener('backbutton', function() {
+                    if (qrcodeModal && qrcodeModal.style.display === 'flex') {
+                        closeQrcodeModalFunc();
+                        return;
+                    }
+                    if (isSettingsOpen) {
+                        toggleSettingsPanel();
+                        return;
+                    }
+                    var now = Date.now();
+                    if (now - firstBackTime > 2000) {
+                        firstBackTime = now;
+                        if (window.plus) {
+                            plus.nativeUI.toast('再按一次退出应用');
+                        }
+                    } else {
+                        if (window.plus) {
+                            plus.runtime.quit();
+                        }
+                    }
+                }, false);
+            }, false);		
         });
         
-        // 下载图表图片 - 修复版：App环境使用plus.gallery保存
         function downloadChartImage() {
             if (!bandwidthChart) {
                 alert('请先生成图表');
                 return;
             }
-            
             try {
-                // 获取图表Canvas元素
                 const canvas = document.getElementById('bandwidthChart');
-                
-                // 创建一个新的Canvas用于添加表头
                 const newCanvas = document.createElement('canvas');
                 const ctx = newCanvas.getContext('2d');
                 
-                // 动态计算字体大小，根据图表宽度调整
                 const chartWidth = canvas.width;
                 let titleFontSize, subtitleFontSize, paddingTop;
                 
                 if (chartWidth < 500) {
-                    // 小尺寸图表
                     titleFontSize = 22;
                     subtitleFontSize = 14;
                     paddingTop = 70;
                 } else if (chartWidth < 800) {
-                    // 中等尺寸图表
                     titleFontSize = 26;
                     subtitleFontSize = 15;
                     paddingTop = 75;
                 } else {
-                    // 大尺寸图表
                     titleFontSize = 30;
                     subtitleFontSize = 16;
                     paddingTop = 80;
                 }
                 
-                // 设置新Canvas的尺寸（原Canvas宽度不变，高度增加用于表头）
                 newCanvas.width = canvas.width;
                 newCanvas.height = canvas.height + paddingTop;
                 
-                // 绘制背景色
-                ctx.fillStyle = '#1e2430';
+                // 背景改为白色
+                ctx.fillStyle = '#ffffff';
                 ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
                 
-                // 绘制表头
-                ctx.fillStyle = '#e0e6ef';
+                // 字体改为深色
+                ctx.fillStyle = '#333333';
                 ctx.font = `bold ${titleFontSize}px Arial`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('性能带宽分布图', newCanvas.width / 2, paddingTop / 2 - 10);
                 
-                // 绘制分隔线
                 ctx.beginPath();
-                ctx.moveTo(newCanvas.width * 0.2, paddingTop / 2 + 5); // 从20%宽度开始
-                ctx.lineTo(newCanvas.width * 0.8, paddingTop / 2 + 5); // 到80%宽度结束
-                ctx.strokeStyle = '#3a4255';
+                ctx.moveTo(newCanvas.width * 0.2, paddingTop / 2 + 5);
+                ctx.lineTo(newCanvas.width * 0.8, paddingTop / 2 + 5);
+                ctx.strokeStyle = '#e0e0e0';
                 ctx.lineWidth = 1;
                 ctx.stroke();
                 
-                // 添加副标题（包含统计信息）
                 ctx.font = `bold ${subtitleFontSize}px Arial`;
-                ctx.fillStyle = '#a0a6b0';
+                ctx.fillStyle = '#666666';
                 ctx.fillText(
                     `均值: ${meanValue.textContent} | 标准差: ${stdValue.textContent} | 模式: ${isMaxBetterMode ? '越大越好' : '越小越好'}`,
                     newCanvas.width / 2,
                     paddingTop / 2 + 25
                 );
                 
-                // 将原图表绘制到新Canvas上（向下偏移）
                 ctx.drawImage(canvas, 0, paddingTop);
                 
-                // 生成文件名，包含当前日期
                 const now = new Date();
                 const dateStr = now.toISOString().split('T')[0];
                 const timeStr = now.getHours().toString().padStart(2, '0') + 
@@ -1962,11 +1442,9 @@
                 const filename = `性能带宽分布图_${dateStr}_${timeStr}.png`;
                 const base64Data = newCanvas.toDataURL('image/png');
 
-                // 判断运行环境：如果是App环境 (window.plus存在)，则使用Native方法保存
                 if (window.plus) {
                     saveImageToGallery(base64Data, filename);
                 } else {
-                    // 浏览器环境：创建临时链接下载
                     const link = document.createElement('a');
                     link.download = filename;
                     link.href = base64Data;
@@ -1981,54 +1459,33 @@
             }
         }
 
-        // 新增：App端保存图片到相册的函数
         function saveImageToGallery(base64Data, filename) {
-            // 创建原生 Bitmap 对象
             var bitmap = new plus.nativeObj.Bitmap("chart_img");
-            
-            // 加载 Base64 数据
             bitmap.loadBase64Data(base64Data, function() {
-                console.log("加载Base64图片数据成功");
-                
-                // 定义临时保存路径 (私有文档目录)
                 var url = "_doc/" + filename;
-                
-                // 保存到私有目录
                 bitmap.save(url, { overwrite: true, format: 'png' }, function(i) {
-                    console.log('保存图片到_doc成功：' + JSON.stringify(i));
-                    
-                    // 保存到系统相册
                     plus.gallery.save(url, function(e) {
-                        // 成功回调
                         plus.nativeUI.toast("图片已保存到系统相册", {duration: "long"});
-                        bitmap.clear(); // 销毁位图释放内存
+                        bitmap.clear();
                     }, function(e) {
-                        // 失败回调
                         plus.nativeUI.toast("保存到相册失败: " + JSON.stringify(e));
-                        console.log("保存到相册失败: " + JSON.stringify(e));
                         bitmap.clear();
                     });
-                    
                 }, function(e) {
-                    console.log('保存图片失败：' + JSON.stringify(e));
                     plus.nativeUI.toast("保存图片失败");
                     bitmap.clear();
                 });
-                
             }, function(e) {
-                console.log('加载图片数据失败：' + JSON.stringify(e));
                 plus.nativeUI.toast("加载图片数据失败");
                 bitmap.clear();
             });
         }
         
-        // 更新模式按钮
         function updateModeButton() {
             const modeIcon = modeToggleBtn.querySelector('.mode-icon');
             const modeText = modeToggleBtn.querySelector('.mode-text');
             
             if (isMaxBetterMode) {
-                // 越大越好模式
                 modeIcon.textContent = '⇅';
                 modeText.textContent = '大好';
                 modeToggleBtn.title = "当前模式：数值越大越好，点击切换为越小越好";
@@ -2036,7 +1493,6 @@
                 modeToggleBtn.classList.add('large-better');
                 chartDescription.textContent = "柱状图按数据值从高到低排列，不同颜色表示不同的LACU区间。";
             } else {
-                // 越小越好模式
                 modeIcon.textContent = '⇅';
                 modeText.textContent = '小好';
                 modeToggleBtn.title = "当前模式：数值越小越好，点击切换为越大越好";
@@ -2046,11 +1502,11 @@
             }
         }
         
-        // 更新LACU定义
         function updateLACUDefinition() {
             let modeHint = '';
+            // 亮色模式下提示文字深色
             if (isMaxBetterMode) {
-                modeHint = '<p class="current-mode-hint">当前模式：数值越大越好</p>';
+                modeHint = '<p class="current-mode-hint" style="color:#333">当前模式：数值越大越好</p>';
                 lacuDefinition.innerHTML = modeHint + `
                     <p><strong>L (Leader):</strong> 数值 ≥ 均值 + 1.25 × 标准差</p>
                     <p><strong>A (Among the Leaders):</strong> 均值 + 0.5 × 标准差 ≤ 数值 < 均值 + 1.25 × 标准差</p>
@@ -2059,7 +1515,7 @@
                     <p style="margin-top: 10px;"><em>注：标准差使用无偏估计公式计算（除以n-1）</em></p>
                 `;
             } else {
-                modeHint = '<p class="current-mode-hint">当前模式：数值越小越好</p>';
+                modeHint = '<p class="current-mode-hint" style="color:#333">当前模式：数值越小越好</p>';
                 lacuDefinition.innerHTML = modeHint + `
                     <p><strong>L (Leader):</strong> 数值 ≤ 均值 - 1.25 × 标准差</p>
                     <p><strong>A (Among the Leaders):</strong> 均值 - 1.25 × 标准差 < 数值 ≤ 均值 - 0.5 × 标准差</p>
@@ -2070,7 +1526,6 @@
             }
         }
         
-        // 自动调整输入框高度
         function autoResizeTextarea() {
             const textarea = dataInput;
             textarea.style.height = 'auto';
@@ -2078,133 +1533,109 @@
             textarea.style.height = newHeight + 'px';
         }
         
-        // 解析输入数据 - 返回有效数字数组
         function parseInputData(input) {
-            // 检查是否是提示文本
             if (input === "请输入样本数据，用逗号、空格或换行分隔。例如：4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18") {
                 return [];
             }
-            
             const cleanedInput = input.replace(/，/g, ',').replace(/\s+/g, ',');
             const parts = cleanedInput.split(',');
-            
             const numbers = parts
                 .map(part => parseFloat(part.trim()))
                 .filter(num => !isNaN(num) && isFinite(num));
-                
             return numbers;
         }
         
-        // 统计输入数据的总数（包括无效数据）
         function countTotalData(input) {
-            // 检查是否是提示文本
             if (input === "请输入样本数据，用逗号、空格或换行分隔。例如：4.4, 3.75, 6.23, 4.65, 4.35, 6.84, 5.5, 4.81, 4.95, 5.18") {
                 return 0;
             }
-            
             if (!input.trim()) return 0;
-            
-            // 替换中文逗号为英文逗号
             let cleanedInput = input.replace(/，/g, ',');
-            
-            // 将连续的空白字符（空格、换行、制表符等）替换为逗号
             cleanedInput = cleanedInput.replace(/\s+/g, ',');
-            
-            // 按逗号分割
             const parts = cleanedInput.split(',');
-            
-            // 过滤掉空字符串（由连续逗号产生）
             const nonEmptyParts = parts.filter(part => part.trim() !== '');
-            
             return nonEmptyParts.length;
         }
         
-        // 计算均值
         function calculateMean(data) {
             const sum = data.reduce((acc, val) => acc + val, 0);
             return sum / data.length;
         }
         
-        // 计算样本标准差
         function calculateStd(data, mean) {
             if (data.length < 2) return 0;
-            
             const squaredDiffs = data.map(val => Math.pow(val - mean, 2));
             const sumSquaredDiffs = squaredDiffs.reduce((acc, val) => acc + val, 0);
             return Math.sqrt(sumSquaredDiffs / (data.length - 1));
         }
         
-        // 确定LACU区间
         function determineLACU(value, mean, std) {
             if (isMaxBetterMode) {
-                // 越大越好模式
-                const uUpper = mean - 0.5 * std;      // U区间的上界，C区间的下界
-                const cUpper = mean + 0.5 * std;      // C区间的上界，A区间的下界
-                const aUpper = mean + 1.25 * std;     // A区间的上界，L区间的下界
+                const uUpper = mean - 0.5 * std;
+                const cUpper = mean + 0.5 * std;
+                const aUpper = mean + 1.25 * std;
                 
                 if (value >= aUpper) return 'L';
                 if (value >= cUpper && value < aUpper) return 'A';
                 if (value >= uUpper && value < cUpper) return 'C';
-                return 'U'; // value < uUpper
+                return 'U'; 
             } else {
-                // 越小越好模式（原模式）
-                const lUpper = mean - 1.25 * std;     // L区间的上界，A区间的下界
-                const aUpper = mean - 0.5 * std;      // A区间的上界，C区间的下界
-                const cUpper = mean + 0.5 * std;      // C区间的上界，U区间的下界
+                const lUpper = mean - 1.25 * std;
+                const aUpper = mean - 0.5 * std;
+                const cUpper = mean + 0.5 * std;
                 
                 if (value <= lUpper) return 'L';
                 if (value > lUpper && value <= aUpper) return 'A';
                 if (value > aUpper && value <= cUpper) return 'C';
-                return 'U'; // value > cUpper
+                return 'U'; 
             }
         }
         
-        // 获取区间颜色
+        /* 更新后的配色：反转色谱
+           L: Blue (#3498db)
+           A: Green (#2ecc71)
+           C: Orange (#f39c12)
+           U: Red (#e74c3c)
+        */
         function getLACUColor(lacu) {
             switch(lacu) {
-                case 'L': return '#e74c3c';
-                case 'A': return '#f39c12';
-                case 'C': return '#2ecc71';
-                case 'U': return '#3498db';
+                case 'L': return '#3498db'; // 蓝色
+                case 'A': return '#2ecc71'; // 绿色
+                case 'C': return '#f39c12'; // 橙色
+                case 'U': return '#e74c3c'; // 红色
                 default: return '#95a5a6';
             }
         }
         
-        // 计算LACU边界值
         function calculateLACUBoundaries(mean, std) {
             if (isMaxBetterMode) {
-                // 越大越好模式
                 return {
-                    lLower: mean + 1.25 * std,    // L区间的下界
-                    aLower: mean + 0.5 * std,     // A区间的下界
-                    aUpper: mean + 1.25 * std,    // A区间的上界
-                    cLower: mean - 0.5 * std,     // C区间的下界
-                    cUpper: mean + 0.5 * std,     // C区间的上界
-                    uUpper: mean - 0.5 * std      // U区间的上界
+                    lLower: mean + 1.25 * std,
+                    aLower: mean + 0.5 * std,
+                    aUpper: mean + 1.25 * std,
+                    cLower: mean - 0.5 * std,
+                    cUpper: mean + 0.5 * std,
+                    uUpper: mean - 0.5 * std
                 };
             } else {
-                // 越小越好模式
                 return {
-                    lUpper: mean - 1.25 * std,    // L区间的上界
-                    aLower: mean - 1.25 * std,    // A区间的下界
-                    aUpper: mean - 0.5 * std,     // A区间的上界
-                    cLower: mean - 0.5 * std,     // C区间的下界
-                    cUpper: mean + 0.5 * std,     // C区间的上界
-                    uLower: mean + 0.5 * std      // U区间的下界
+                    lUpper: mean - 1.25 * std,
+                    aLower: mean - 1.25 * std,
+                    aUpper: mean - 0.5 * std,
+                    cLower: mean - 0.5 * std,
+                    cUpper: mean + 0.5 * std,
+                    uLower: mean + 0.5 * std
                 };
             }
         }
         
-        // 更新LACU区间显示
         function updateLACUDisplay(boundaries) {
             if (isMaxBetterMode) {
-                // 越大越好模式显示
                 lRangeDisplay.textContent = `[${boundaries.lLower.toFixed(2)}, +∞)`;
                 aRangeDisplay.textContent = `[${boundaries.aLower.toFixed(2)}, ${boundaries.aUpper.toFixed(2)})`;
                 cRangeDisplay.textContent = `[${boundaries.cLower.toFixed(2)}, ${boundaries.cUpper.toFixed(2)})`;
                 uRangeDisplay.textContent = `(-∞, ${boundaries.uUpper.toFixed(2)})`;
             } else {
-                // 越小越好模式显示
                 lRangeDisplay.textContent = `(-∞, ${boundaries.lUpper.toFixed(2)}]`;
                 aRangeDisplay.textContent = `(${boundaries.aLower.toFixed(2)}, ${boundaries.aUpper.toFixed(2)}]`;
                 cRangeDisplay.textContent = `(${boundaries.cLower.toFixed(2)}, ${boundaries.cUpper.toFixed(2)}]`;
@@ -2212,111 +1643,74 @@
             }
         }
         
-        // 获取图表中需要绘制的LAC线
         function getChartLines(boundaries) {
             if (isMaxBetterMode) {
-                // 越大越好模式：绘制C区间的下界、A区间的下界、L区间的下界
-                // 这些线对应各个区间的下界，用于判断数据点属于哪个区间
                 return [
-                    { value: boundaries.cLower, color: '#2ecc71', label: 'C', lightColor: 'rgba(46, 204, 113, 0.2)' },
-                    { value: boundaries.aLower, color: '#f39c12', label: 'A', lightColor: 'rgba(243, 156, 18, 0.2)' },
-                    { value: boundaries.lLower, color: '#e74c3c', label: 'L', lightColor: 'rgba(231, 76, 60, 0.2)' }
-                ].sort((a, b) => a.value - b.value); // 从低到高排序
+                    { value: boundaries.cLower, color: '#f39c12', label: 'C', lightColor: 'rgba(243, 156, 18, 0.1)' },
+                    { value: boundaries.aLower, color: '#2ecc71', label: 'A', lightColor: 'rgba(46, 204, 113, 0.1)' },
+                    { value: boundaries.lLower, color: '#3498db', label: 'L', lightColor: 'rgba(52, 152, 219, 0.1)' }
+                ].sort((a, b) => a.value - b.value);
             } else {
-                // 越小越好模式：绘制L区间的上界、A区间的上界、C区间的上界
-                // 这些线对应各个区间的上界，用于判断数据点属于哪个区间
                 return [
-                    { value: boundaries.lUpper, color: '#e74c3c', label: 'L', lightColor: 'rgba(231, 76, 60, 0.2)' },
-                    { value: boundaries.aUpper, color: '#f39c12', label: 'A', lightColor: 'rgba(243, 156, 18, 0.2)' },
-                    { value: boundaries.cUpper, color: '#2ecc71', label: 'C', lightColor: 'rgba(46, 204, 113, 0.2)' }
-                ].sort((a, b) => a.value - b.value); // 从低到高排序
+                    { value: boundaries.lUpper, color: '#3498db', label: 'L', lightColor: 'rgba(52, 152, 219, 0.1)' },
+                    { value: boundaries.aUpper, color: '#2ecc71', label: 'A', lightColor: 'rgba(46, 204, 113, 0.1)' },
+                    { value: boundaries.cUpper, color: '#f39c12', label: 'C', lightColor: 'rgba(243, 156, 18, 0.1)' }
+                ].sort((a, b) => a.value - b.value);
             }
         }
         
-        // 格式化数值，如果小数部分为0则不显示小数部分
         function formatNumber(value) {
-            // 检查是否为整数或小数部分为0
             if (Number.isInteger(value)) {
                 return value.toString();
             }
-            
-            // 转换为字符串并检查小数部分是否都是0
             const str = value.toString();
             const parts = str.split('.');
-            
             if (parts.length === 2) {
-                // 检查小数部分是否全是0
                 if (/^0+$/.test(parts[1])) {
-                    return parts[0]; // 返回整数部分
+                    return parts[0];
                 }
-                // 去掉末尾的0
                 return value.toFixed(2).replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '');
             }
-            
             return str;
         }
         
-        // 优化后的Y轴步长计算函数，保持一致的刻度梯度
         function calculateStepSize(range) {
-            // 标准刻度序列：0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10, 20, 50, 100, ...
             const standardSteps = [0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10, 20, 50, 100];
-            
-            // 计算理想步长（范围除以8-12个刻度）
             const idealStep = range / 10;
-            
-            // 找到最接近的标准步长
             for (let i = 0; i < standardSteps.length; i++) {
                 if (standardSteps[i] >= idealStep) {
                     return standardSteps[i];
                 }
             }
-            
-            // 如果范围很大，使用更大的步长
             return Math.ceil(range / 10);
         }
         
-        // 计算并绘制图表
         function calculateAndPlot() {
-            // 解析输入数据
             const inputData = parseInputData(dataInput.value);
-            
-            // 检查数据有效性
             if (inputData.length < 3) {
                 alert('请输入至少3个有效数值');
                 return;
             }
-            
-            // 显示加载指示器
             loadingIndicator.style.display = 'block';
             resultsCard.style.display = 'none';
             chartCard.style.display = 'none';
             
-            // 使用setTimeout让UI有机会更新
             setTimeout(() => {
                 try {
-                    // 保存当前数据
                     currentData = [...inputData];
-                    
-                    // 计算统计值
                     mean = calculateMean(currentData);
                     std = calculateStd(currentData, mean);
-                    
-                    // 计算LACU边界
                     const boundaries = calculateLACUBoundaries(mean, std);
                     
-                    // 更新计算结果
                     meanValue.textContent = formatNumber(mean);
                     stdValue.textContent = formatNumber(std);
                     
-                    // 修复：使用新的countTotalData函数统计总数
                     const totalDataCount = countTotalData(dataInput.value);
                     totalCount.textContent = totalDataCount;
                     validCount.textContent = currentData.length;
                     
-                    // 更新LACU区间范围显示
                     updateLACUDisplay(boundaries);
                     
-                    // 确定每个数据点的LACU区间
                     const dataWithLACU = currentData.map(value => {
                         const lacu = determineLACU(value, mean, std);
                         return {
@@ -2326,21 +1720,16 @@
                         };
                     });
                     
-                    // 从高到低排序数据
                     dataWithLACU.sort((a, b) => b.value - a.value);
                     
-                    // 准备图表数据
                     const labels = dataWithLACU.map((_, index) => `数据${index + 1}`);
                     const values = dataWithLACU.map(item => item.value);
                     const colors = dataWithLACU.map(item => item.color);
                     
-                    // 获取图表需要绘制的线条
                     const chartLines = getChartLines(boundaries);
                     
-                    // 绘制图表
                     drawChart(labels, values, colors, chartLines);
                     
-                    // 隐藏加载指示器，显示结果
                     loadingIndicator.style.display = 'none';
                     resultsCard.style.display = 'block';
                     chartCard.style.display = 'block';
@@ -2353,32 +1742,22 @@
             }, 100);
         }
         
-        // 绘制图表
         function drawChart(labels, values, colors, chartLines) {
             const ctx = document.getElementById('bandwidthChart').getContext('2d');
-            
-            // 如果存在现有图表，销毁它
             if (bandwidthChart) {
                 bandwidthChart.destroy();
             }
-            
-            // 计算数据范围
             const minValue = Math.min(...values);
             const maxValue = Math.max(...values);
-            
-            // 获取所有边界值
             const boundaryValues = chartLines.map(line => line.value);
             const allValues = [...values, ...boundaryValues];
             const absoluteMin = Math.min(...allValues);
             const absoluteMax = Math.max(...allValues);
-            
-            // 计算数据范围
             const dataRange = absoluteMax - absoluteMin;
             
-            // 根据数据范围确定padding比例
             let paddingRatio;
             if (dataRange < 0.5) {
-                paddingRatio = 0.2;  // 数据范围很小时，增加padding
+                paddingRatio = 0.2;
             } else if (dataRange < 2) {
                 paddingRatio = 0.15;
             } else if (dataRange < 5) {
@@ -2391,43 +1770,28 @@
                 paddingRatio = 0.03;
             }
             
-            // 计算Y轴范围
             const chartMin = Math.max(0, absoluteMin - (dataRange * paddingRatio));
             const chartMax = absoluteMax + (dataRange * paddingRatio);
-            
-            // 计算合适的步长
             const range = chartMax - chartMin;
             let stepSize = calculateStepSize(range);
-            
-            // 确保Y轴范围是步长的整数倍
             let finalMin = Math.floor(chartMin / stepSize) * stepSize;
             let finalMax = Math.ceil(chartMax / stepSize) * stepSize;
             
-            // 如果范围非常小，确保至少有2个刻度
             if (finalMax - finalMin < stepSize) {
                 finalMin -= stepSize;
                 finalMax += stepSize;
             }
-            
-            // 确保Y轴范围足够显示所有数据和边界线
             const finalRange = finalMax - finalMin;
-            
-            // 如果数据范围非常小，确保Y轴至少有一定高度
             if (finalRange < 0.1) {
-                const center = (finalMin + finalMax) / 2;
-                // 使用更小的步长
                 stepSize = 0.05;
                 finalMin = Math.floor(chartMin / stepSize) * stepSize;
                 finalMax = Math.ceil(chartMax / stepSize) * stepSize;
-                
-                // 确保至少有两个刻度
                 if (finalMax - finalMin < stepSize) {
                     finalMin -= stepSize;
                     finalMax += stepSize;
                 }
             }
             
-            // 创建新图表
             bandwidthChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -2436,11 +1800,10 @@
                         {
                             data: values,
                             backgroundColor: colors,
+                            // 边框色微调
                             borderColor: colors.map(color => {
-                                const r = parseInt(color.slice(1, 3), 16);
-                                const g = parseInt(color.slice(3, 5), 16);
-                                const b = parseInt(color.slice(5, 7), 16);
-                                return `rgb(${Math.max(0, r-30)}, ${Math.max(0, g-30)}, ${Math.max(0, b-30)})`;
+                                // 简单加深一点作为边框
+                                return color;
                             }),
                             borderWidth: 1,
                             yAxisID: 'y',
@@ -2457,10 +1820,10 @@
                             display: false
                         },
                         tooltip: {
-                            backgroundColor: 'rgba(30, 36, 48, 0.9)',
-                            titleColor: '#e0e6ef',
-                            bodyColor: '#e0e6ef',
-                            borderColor: '#3a4255',
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)', // 亮色提示框
+                            titleColor: '#333',
+                            bodyColor: '#666',
+                            borderColor: '#eee',
                             borderWidth: 1,
                             callbacks: {
                                 label: function(context) {
@@ -2478,14 +1841,14 @@
                         x: {
                             grid: {
                                 display: false,
-                                color: '#2a3140'
+                                color: '#eee'
                             },
                             ticks: {
                                 maxRotation: 45,
                                 font: {
                                     size: 10
                                 },
-                                color: '#a0a6b0'
+                                color: '#666' // 深色刻度
                             }
                         },
                         y: {
@@ -2497,7 +1860,7 @@
                             },
                             grid: {
                                 drawBorder: false,
-                                color: '#3a4255', // 修改：将网格线颜色调浅
+                                color: '#f0f0f0', // 浅色网格
                                 drawOnChartArea: true
                             },
                             beginAtZero: false,
@@ -2505,16 +1868,14 @@
                             max: finalMax,
                             ticks: {
                                 stepSize: stepSize,
-                                // 显示所有刻度值
                                 callback: function(value, index, values) {
-                                    // 确保刻度值显示格式一致
                                     return formatNumber(value);
                                 },
                                 font: {
                                     size: 11
                                 },
-                                color: '#a0a6b0',
-                                maxTicksLimit: 15  // 增加最大刻度限制
+                                color: '#666', // 深色刻度
+                                maxTicksLimit: 15
                             }
                         }
                     },
@@ -2535,7 +1896,6 @@
                         const chartArea = chart.chartArea;
                         const isMobile = window.innerWidth < 768;
                         
-                        // 绘制线条
                         chartLines.forEach(line => {
                             const yPosition = yAxis.getPixelForValue(line.value);
                             
@@ -2543,7 +1903,6 @@
                                 return;
                             }
                             
-                            // 绘制横线
                             ctx.save();
                             ctx.beginPath();
                             ctx.moveTo(xAxis.left, yPosition);
@@ -2554,7 +1913,6 @@
                             ctx.stroke();
                             ctx.restore();
                             
-                            // 在线的最右侧添加标签
                             ctx.save();
                             
                             const labelText = `${line.label}: ${formatNumber(line.value)}`;
@@ -2573,7 +1931,6 @@
                                 return;
                             }
                             
-                            // 绘制圆角矩形
                             ctx.beginPath();
                             ctx.moveTo(rectX + borderRadius, rectY);
                             ctx.lineTo(rectX + rectWidth - borderRadius, rectY);
@@ -2586,6 +1943,7 @@
                             ctx.quadraticCurveTo(rectX, rectY, rectX + borderRadius, rectY);
                             ctx.closePath();
                             
+                            // 背景色使用浅色
                             ctx.fillStyle = line.lightColor;
                             ctx.fill();
                             
@@ -2613,10 +1971,7 @@
                         
                         ctx.save();
                         
-                        // 根据屏幕宽度和设备类型动态调整字体大小
                         const isMobile = window.innerWidth < 768;
-                        
-                        // 计算平均柱宽，用于调整字体大小
                         let totalBarWidth = 0;
                         let barCount = 0;
                         meta.data.forEach((bar) => {
@@ -2627,42 +1982,35 @@
                         });
                         const avgBarWidth = barCount > 0 ? totalBarWidth / barCount : 0;
                         
-                        // 动态调整字体大小 - 手机端使用更小的字体
                         let fontSize;
                         if (isMobile) {
-                            // 手机端根据数据量调整字体大小
                             if (values.length > 15) {
-                                fontSize = 7; // 数据很多时
+                                fontSize = 7;
                             } else if (values.length > 10) {
-                                fontSize = 8; // 数据较多时
+                                fontSize = 8;
                             } else if (avgBarWidth < 25) {
-                                fontSize = 8; // 柱很窄时
+                                fontSize = 8;
                             } else {
-                                fontSize = 9; // 正常情况
+                                fontSize = 9;
                             }
                         } else {
-                            fontSize = 11; // 桌面端
+                            fontSize = 11;
                         }
                         
                         ctx.font = `bold ${fontSize}px Arial`;
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'bottom';
                         
-                        // 记录已经绘制标签的位置，防止重叠
                         const drawnLabels = [];
-                        const minSpacing = fontSize * 1.2; // 最小间距为字体高度的1.2倍
+                        const minSpacing = fontSize * 1.2;
                         
                         meta.data.forEach((bar, index) => {
                             const value = values[index];
-                            if (bar.height > 10) { // 降低高度要求，确保更多标签显示
-                                // 使用格式化函数格式化数值
+                            if (bar.height > 10) { 
                                 const formattedValue = formatNumber(value);
-                                
-                                // 计算标签位置
                                 const labelX = bar.x;
                                 const labelY = bar.y - 3;
                                 
-                                // 检查是否与已绘制的标签重叠
                                 let canDraw = true;
                                 for (const drawn of drawnLabels) {
                                     const distance = Math.abs(drawn.x - labelX);
@@ -2673,13 +2021,12 @@
                                 }
                                 
                                 if (canDraw) {
-                                    // 修改：使用柱状图对应的颜色，而不是固定的#e0e6ef
                                     ctx.fillStyle = colors[index];
                                     
-                                    // 绘制标签背景（可选，提高可读性）
                                     if (isMobile && fontSize < 9) {
                                         ctx.save();
-                                        ctx.fillStyle = 'rgba(30, 36, 48, 0.7)';
+                                        // 亮色模式下的背景
+                                        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
                                         const textWidth = ctx.measureText(formattedValue).width;
                                         const padding = 2;
                                         ctx.fillRect(
@@ -2690,7 +2037,6 @@
                                         );
                                         ctx.restore();
                                         
-                                        // 恢复文本颜色
                                         ctx.fillStyle = colors[index];
                                     }
                                     
@@ -2700,7 +2046,6 @@
                                         labelY
                                     );
                                     
-                                    // 记录已绘制标签的位置
                                     drawnLabels.push({ x: labelX, y: labelY });
                                 }
                             }
@@ -2712,7 +2057,6 @@
             });
         }
         
-        // 监听窗口大小变化，重新绘制图表
         window.addEventListener('resize', function() {
             if (bandwidthChart && currentData.length > 0) {
                 const dataWithLACU = currentData.map(value => {
@@ -2736,5 +2080,100 @@
             }
         });
     </script>
+
+	<script>
+	// 5+App 原生更新逻辑保留，但在网页端不生效
+	const APP_VERSION = "1.0.0"; 
+	const UPDATE_URL = "https://samaritan.dpdns.org/version.json"; 
+	
+	document.addEventListener('plusready', function(){
+	    checkUpdate(true); 
+	});
+	
+	var checkBtn = document.getElementById('checkUpdateBtn');
+	if(checkBtn){
+	    checkBtn.addEventListener('click', function() {
+	        checkUpdate(false); 
+	    });
+	}
+	
+	function checkUpdate(isStartup) {
+	    if(!isStartup) {
+	        var spinner = document.getElementById('updateSpinner');
+	        var btnText = document.getElementById('updateBtnText');
+	        var btn = document.getElementById('checkUpdateBtn');
+	        
+	        if(spinner) spinner.style.display = 'inline-block';
+	        if(btnText) btnText.textContent = '检查中...';
+	        if(btn) btn.disabled = true;
+	    }
+	
+	    var xhr = new XMLHttpRequest();
+	    xhr.open("GET", UPDATE_URL + "?t=" + new Date().getTime()); 
+	    
+	    xhr.onreadystatechange = function() {
+	        if (xhr.readyState == 4) {
+	            if (xhr.status == 200) {
+	                try {
+	                    var res = JSON.parse(xhr.responseText);
+	
+	                    if (checkKillSwitch(res)) return; 
+	                    
+	                    if (res.version !== APP_VERSION) {
+	                        var btn = ["立即更新"]; 
+	                        plus.nativeUI.confirm("发现新版本：" + res.version + "\n" + res.note, function(e) {
+	                            plus.runtime.openURL(res.url); 
+	                        }, "版本更新", btn);
+	                    } else {
+	                        if(!isStartup) {
+	                            var statusBox = document.getElementById('updateStatus');
+	                            if(statusBox) statusBox.innerHTML = '<span style="color: #2ecc71; font-weight: bold;">当前已是最新版本</span>';
+	                            plus.nativeUI.toast("当前已是最新版本");
+	                        }
+	                    }
+	                } catch(e) {
+	                    console.log("JSON解析失败");
+	                    if(!isStartup) plus.nativeUI.toast("配置解析异常");
+	                }
+	            } else {
+	                if(!isStartup) plus.nativeUI.toast("检查更新失败，请检查网络");
+	            }
+	            
+	            if(!isStartup) {
+	                var spinner = document.getElementById('updateSpinner');
+	                var btnText = document.getElementById('updateBtnText');
+	                var btn = document.getElementById('checkUpdateBtn');
+	                
+	                if(spinner) spinner.style.display = 'none';
+	                if(btnText) btnText.textContent = '检查更新';
+	                if(btn) btn.disabled = false;
+	            }
+	        }
+	    };
+	    xhr.send();
+	}
+	
+	function checkKillSwitch(res) {
+	    if (res.stop_service === true) {
+	        document.body.innerHTML = 
+	            '<div style="position:fixed; top:0; left:0; width:100%; height:100%; background:#fff; display:flex; justify-content:center; align-items:center; z-index:999999;">' +
+	                '<div style="text-align:center; padding:30px;">' + 
+	                    '<h3 style="color:#333; margin-bottom:15px; font-size: 20px; font-weight: bold;">服务暂停</h3>' +
+	                    '<p style="color:#666; font-size:16px; line-height:1.6;">' + 
+	                        (res.stop_text || "本应用暂时停止服务，请稍后重试。") + 
+	                    '</p>' +
+	                '</div>' +
+	            '</div>';
+	        document.body.style.overflow = 'hidden';
+	        if (window.plus) {
+	            plus.key.addEventListener('backbutton', function() {
+	                plus.runtime.quit(); 
+	            }, false);
+	        }
+	        return true; 
+	    }
+	    return false; 
+	}
+	</script>
 </body>
 </html>
