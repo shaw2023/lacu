@@ -25,7 +25,7 @@
 - **U**：普通性能（红色）
 
 ## 🚀 在线体验
-- **网页版：** [👉 点击这里在线使用](https://shaw2023.github.io/lacu/)
+- **网页版：** [👉 点击这里在线使用](https://lacu.samaritan.dpdns.org)
 - **移动端：** [📥 下载 Android 安装包 (APK)](https://github.com/shaw2023/lacu/releases)
 
 ## 贡献
