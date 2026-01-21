@@ -770,35 +770,32 @@
 </head>
 
 <script>
-    document.addEventListener('plusready', function(){
-        // 百度统计逻辑保留
-        var SITE_ID = "3581fd9895ba2af8f7c20c3be12f24b4"; 
-        var BASE_URL = "https://samaritan.dpdns.org/index";
-        var storageKey = "baidutongji_uuid"; 
-        var visitorId = localStorage.getItem(storageKey);
-        var isNewVisitor = "0"; 
-        if (!visitorId) {
-            visitorId = "u_" + makeShortId(6);
-            localStorage.setItem(storageKey, visitorId);
-            isNewVisitor = "1"; 
-        }
-        var deviceModel = plus.device.model;
-        var fullUrl = BASE_URL + "?uid=" + visitorId + "&m=" + encodeURIComponent(deviceModel);
-        var encodedUrl = encodeURIComponent(fullUrl);
-        var rnd = Math.ceil(Math.random() * 1000000000);
-        var baiduApi = "https://hm.baidu.com/hm.gif?si=" + SITE_ID + "&et=0&nv=" + isNewVisitor + "&u=" + encodedUrl + "&rnd=" + rnd;
-        var img = new Image();
-        img.src = baiduApi;
-        function makeShortId(length) {
-            var result = '';
-            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            var charactersLength = characters.length;
-            for ( var i = 0; i < length; i++ ) {
-                result += characters.charAt(Math.floor(Math.random() * charactersLength));
-            }
-            return result;
-        }
-    });
+    // 1. 初始化百度统计基础代码
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?3581fd9895ba2af8f7c20c3be12f24b4";
+        var s = document.getElementsByTagName("script")[0]; 
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    // 2. 环境判断与数据上报逻辑
+    (function() {
+        // 判断是否为 App 环境
+        var isApp = (typeof plus !== 'undefined') || (navigator.userAgent.indexOf('Html5Plus') > -1);
+        
+        // 定义虚拟路径：App端上报为 /app，网页端上报为 /web
+        var platformPath = isApp ? "/app/index.html" : "/web/index.html";
+        
+        // 获取设备信息 (仅App端能获取具体型号)
+        var deviceDetail = isApp ? (window.plus ? plus.device.model : "Android-App") : "Web-Browser";
+
+        // 发送虚拟页面浏览记录
+        _hmt.push(['_trackPageview', platformPath + "?device=" + encodeURIComponent(deviceDetail)]);
+        
+        // 打印日志方便测试（正式上线可删除）
+        console.log("统计已发送，当前环境：" + (isApp ? "App" : "网页"));
+    })();
 </script>
 
 <body>
