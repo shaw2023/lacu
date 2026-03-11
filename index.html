@@ -194,8 +194,6 @@
             padding-top: 10px;
         }
         
-        /* 检测更新相关样式已保留，但在HTML中隐藏了入口 */
-        
         /* 分享选项样式 - 亮色适配 */
         .share-options {
             display: flex;
@@ -638,12 +636,7 @@
             color: #333; /* 深色文字 */
         }
         
-        /* 更新后的配色：反转色谱
-           L: Blue (#3498db)
-           A: Green (#2ecc71)
-           C: Orange (#f39c12)
-           U: Red (#e74c3c)
-        */
+        /* 更新后的配色：反转色谱 */
         .L-box { background-color: rgba(52, 152, 219, 0.1); border: 1px solid rgba(52, 152, 219, 0.3); }
         .A-box { background-color: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.3); }
         .C-box { background-color: rgba(243, 156, 18, 0.1); border: 1px solid rgba(243, 156, 18, 0.3); }
@@ -716,6 +709,44 @@
             border-bottom: 1px solid #e0e0e0;
         }
         
+        /* --- 新增：底部操作长方块按钮样式 --- */
+        .bottom-actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .bottom-action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 15px;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+            gap: 10px;
+        }
+        
+        .bottom-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            border-color: #6a11cb;
+        }
+        
+        .bottom-action-btn .action-icon {
+            font-size: 1.5rem;
+        }
+        
+        .bottom-action-btn .action-text {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
         .footer {
             text-align: center;
             color: #999;
@@ -739,6 +770,21 @@
             .lacu-label { font-size: 1.5rem; }
             .settings-panel { width: 85%; left: -85%; }
             .main-content.settings-open { transform: translateX(85%); }
+            
+            /* 新增：底部按钮移动端适配 */
+            .bottom-actions {
+                gap: 10px;
+            }
+            .bottom-action-btn {
+                padding: 12px;
+                gap: 6px;
+            }
+            .bottom-action-btn .action-icon {
+                font-size: 1.2rem;
+            }
+            .bottom-action-btn .action-text {
+                font-size: 0.9rem;
+            }
         }
         
         @media (min-width: 481px) {
@@ -918,6 +964,18 @@
                         <p style="margin-top: 10px;"><em>注：标准差使用无偏估计公式计算（除以n-1）</em></p>
                     </div>
                 </section>
+
+                <div class="bottom-actions">
+                    <a href="https://samaritan.dpdns.org/" target="_blank" class="bottom-action-btn">
+                        <span class="action-icon">🏠</span>
+                        <span class="action-text">访问官网</span>
+                    </a>
+                    <a href="https://samaritan.dpdns.org/app-release.apk" class="bottom-action-btn">
+                        <span class="action-icon">📥</span>
+                        <span class="action-text">下载APP</span>
+                    </a>
+                </div>
+
             </main>
             
             <footer class="footer">
